@@ -1,16 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="UTF-8"/>
-	<meta http-equiv="X-UA-Compatible" content="chrome=1"/>
-	<title>Finding any duplicate tests or IDs</title>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html><head>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+<link href="../../../CSS/style.php" rel="stylesheet" type="text/css" />
+<link href="../../../CSS/layout.php" rel="stylesheet" type="text/css" />
+
 </head>
 
 <body>
-<?php
-require_once '../is_email.php';
 
-$emailes		= array();
+<?php
+require_once '../devpkg.php';				//	Dominic Sayers
+
+$addresses		= array();
 $ids			= array();
 
 $duplicates		= array();
@@ -21,15 +22,15 @@ $dirty 			= false;
 
 $document		= new DOMDocument();
 
-$document->load('../test/tests.xml');
+$document->load('tests.xml');
 
 $tests		= $document->getElementsByTagName('tests')->item(0);
 $version	= $tests->getAttribute("version");
 $testList	= $document->getElementsByTagName('test');
 
 for ($i = 0; $i < $testList->length; ++$i) {
-	$test		= $testList->item($i);
-	$tagList	= $test->childNodes;
+	$test = $testList->item($i);
+	$tagList = $test->childNodes;
 
 	unset($id);
 
@@ -41,12 +42,12 @@ for ($i = 0; $i < $testList->length; ++$i) {
 		}
 	}
 
-	if (in_array($email, $emailes)) {
-		$duplicates['address'][]	= $email;
+	if (in_array($address, $addresses)) {
+		$duplicates['address'][]	= $address;
 		$duplicates['addressIDs'][]	= $id;
 	} else {
-		$emailes[]			= $email;
-
+		$addresses[]				= $address;
+		
 		//	Add ID if it hasn't got one
 		if (!isset($id)) {
 			$dirty = true;
@@ -58,18 +59,18 @@ for ($i = 0; $i < $testList->length; ++$i) {
 	if (in_array($id, $ids)) {
 		$duplicates['id'][]	= $id;
 	} else {
-		$ids[]			= $id;
+		$ids[]				= $id;
 	}
 }
 
 if ($dirty) $document->save('new_tests.xml');
 
-//-$count = $results['count'];
+$count = $results['count'];
 
 echo "<p><strong>Duplicate addresses</strong></p>\n";
 
-foreach ($duplicates['address'] as $email) {
-	echo "<p>$email</p>\n";
+foreach ($duplicates['address'] as $address) {
+	echo "<p>$address</p>\n";
 }
 
 echo "<br /><p><strong>Duplicate IDs</strong></p>\n";
