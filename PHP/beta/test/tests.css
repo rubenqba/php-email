@@ -1,0 +1,91 @@
+*			{margin:0;padding:0;}
+
+body			{
+			font-family:Calibri,Tahoma,Verdana,Arial,Helvetica,sans,sans-serif;
+			font-size:12px;
+			margin:1em;
+			}
+
+div			{float:left;}
+br			{clear:left;}
+table			{border-collapse:collapse;}
+th			{text-align:left;padding:0.5em;background-color:#CCCCCC;border-right:1px solid white;}
+tr:nth-child(odd)	{background-color:#EEEEEE;}
+td			{vertical-align:top;padding:0.5em;border-right:1px solid white;}
+
+h2			{
+			margin:1em 0 0.5em 0;
+			font-size:22px;
+			color:#444444;
+			}
+
+h3			{
+			margin:1em 0 0 0;
+			font-size:18px;
+			color:#FFFFFF;
+			background-color:#888888;
+			text-align:center
+			}
+
+.results		{font-size:16px;margin-top:1em;}
+.unexpected, .heading	{font-weight:bold;}
+.address		{text-align:right;width:320px;vertical-align:middle;word-wrap:break-word;}
+.label			{width:52px;margin-right:0.5em;color:#444444;}
+.author			{font-style:italic;}
+.rubric			{margin:0.5em 0 0.5em 0;}
+.statistics		{color:#FFFFFF;font-size:16px;font-weight:bold;text-align:center;padding:0.25em;}
+.green.statistics	{background-color:green;}
+.amber			{background-color:#FF9900;color:black;}
+.red			{background-color:red;color:#FFFF66;}
+.short			{font-size:18px;}
+.category, .diagnosis	{padding:0 2px;}
+.infoblock		{width:280px;}
+
+.text			{
+			float:left;
+			font-family:Calibri,Tahoma,Verdana,Arial,Helvetica,sans,sans-serif;
+			font-size:22px;
+			font-weight:bold;
+			margin-right:0.5em;
+			width:10em;
+			border:1px solid #444444;
+			}
+
+a, .menu		{
+			float:left;
+			padding:0.25em 1em 0.4em 1em;
+			font-size:16px;
+			background-color:#888888;
+			color:#FFFFFF;
+			margin-right:0.25em;
+			text-decoration:none;
+			border-radius:12px;
+			-moz-border-radius:12px;
+			}
+
+.menu		{
+			border:none;
+			cursor:pointer;
+			font-family:Calibri,Tahoma,Verdana,Arial,Helvetica,sans,sans-serif;
+			font-size:15px;
+			}
+
+a:hover, .menu:hover
+			{background-color:#AAAAAA;}
+
+ol {
+	background:2.3em 0 repeat-y;
+	overflow:auto;
+	font-family:Consolas,"Courier New",Courier,mono;
+	margin:0;
+	padding:1em 0 1em 2.8em;
+	color:#fff;
+	width:90%;
+}
+
+ol li {
+	background:#ffc;
+	font-size:small;
+	color:#036;
+	white-space:pre;
+}

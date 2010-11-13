@@ -1,0 +1,1305 @@
+<?xml version="1.0"?>
+<!DOCTYPE tests>
+<!--
+If you update these tests, don't forget to change the actual version number
+attribute in the <tests> element below!
+
+Date       Tests        Version Notes
+.......... ............ ....... ...............................................
+2010-10-18 #1-#279      3.0	New schema designed to enhance fault
+				identification.
+-->
+<tests xmlns="http://www.w3.org/2001/XMLSchema-instance" version="3.0" SchemaLocation="new.xsd">
+	<description><strong>New test set created by Michael Rushton (michael@squiloople.com)</strong><br/>This test set is designed to replace all the logic of the previous one but with fewer tests.</description>
+	<test id="1">
+		<address/>
+		<category>255</category>
+		<diagnosis>132</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="2">
+		<address>test</address>
+		<category>255</category>
+		<diagnosis>132</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="3">
+		<address>@</address>
+		<category>255</category>
+		<diagnosis>131</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="4">
+		<address>test@</address>
+		<category>255</category>
+		<diagnosis>132</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="5">
+		<address>test@io</address>
+		<comment>io. currently has an MX-record (Nov 2010)</comment>
+		<category>0</category>
+		<diagnosis>0</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="6">
+		<address>@io</address>
+		<comment>io. currently has an MX-record (Nov 2010)</comment>
+		<category>255</category>
+		<diagnosis>131</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="7">
+		<address>@iana.org</address>
+		<category>255</category>
+		<diagnosis>131</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="8">
+		<address>test@iana.org</address>
+		<category>0</category>
+		<diagnosis>0</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="9">
+		<address>test@nominet.org.uk</address>
+		<category>0</category>
+		<diagnosis>0</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="10">
+		<address>test@about.museum</address>
+		<category>0</category>
+		<diagnosis>0</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="11">
+		<address>a@iana.org</address>
+		<category>0</category>
+		<diagnosis>0</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="12">
+		<address>test@e.com</address>
+		<category>7</category>
+		<diagnosis>6</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="13">
+		<address>test@iana.a</address>
+		<category>7</category>
+		<diagnosis>6</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="14">
+		<address>test.test@iana.org</address>
+		<category>0</category>
+		<diagnosis>0</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="15">
+		<address>.test@iana.org</address>
+		<category>255</category>
+		<diagnosis>142</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="16">
+		<address>test.@iana.org</address>
+		<category>255</category>
+		<diagnosis>143</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="17">
+		<address>test..iana.org</address>
+		<category>255</category>
+		<diagnosis>133</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="18">
+		<address>test_exa-mple.com</address>
+		<category>255</category>
+		<diagnosis>132</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="19">
+		<address>!#$%&amp;`*+/=?^`{|}~@iana.org</address>
+		<category>0</category>
+		<diagnosis>0</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="20">
+		<address>test\@test@iana.org</address>
+		<category>255</category>
+		<diagnosis>138</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="21">
+		<address>123@iana.org</address>
+		<category>0</category>
+		<diagnosis>0</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="22">
+		<address>test@123.com</address>
+		<category>0</category>
+		<diagnosis>0</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="23">
+		<address>test@iana.123</address>
+		<category>15</category>
+		<diagnosis>10</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="24">
+		<address>test@255.255.255.255</address>
+		<category>15</category>
+		<diagnosis>10</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="25">
+		<address>abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghiklm@iana.org</address>
+		<category>0</category>
+		<diagnosis>0</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="26">
+		<address>abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghiklmn@iana.org</address>
+		<category>127</category>
+		<diagnosis>67</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="27">
+		<address>test@abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.com</address>
+		<category>7</category>
+		<diagnosis>6</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="28">
+		<address>test@abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghiklm.com</address>
+		<category>127</category>
+		<diagnosis>69</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="29">
+		<address>test@mason-dixon.com</address>
+		<category>0</category>
+		<diagnosis>0</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="30">
+		<address>test@-iana.org</address>
+		<category>255</category>
+		<diagnosis>144</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="31">
+		<address>test@iana-.com</address>
+		<category>255</category>
+		<diagnosis>145</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="32">
+		<address>test@g--a.com</address>
+		<category>0</category>
+		<diagnosis>0</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="33">
+		<address>test@iana.co-uk</address>
+		<category>7</category>
+		<diagnosis>6</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="34">
+		<address>test@.iana.org</address>
+		<category>255</category>
+		<diagnosis>142</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="35">
+		<address>test@iana.org.</address>
+		<category>255</category>
+		<diagnosis>143</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="36">
+		<address>test@iana..com</address>
+		<category>255</category>
+		<diagnosis>133</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="37">
+		<address>a@a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v</address>
+		<category>7</category>
+		<diagnosis>6</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="38">
+		<address>abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghiklm@abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghi</address>
+		<category>7</category>
+		<diagnosis>6</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="39">
+		<address>abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghiklm@abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghij</address>
+		<category>127</category>
+		<diagnosis>66</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="40">
+		<address>a@abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefg.hij</address>
+		<category>127</category>
+		<diagnosis>66</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="41">
+		<address>a@abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefg.hijk</address>
+		<category>127</category>
+		<diagnosis>68</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="42">
+		<address>"test"@iana.org</address>
+		<category>15</category>
+		<diagnosis>11</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="43">
+		<address>""@iana.org</address>
+		<category>15</category>
+		<diagnosis>11</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="44">
+		<address>"""@iana.org</address>
+		<category>255</category>
+		<diagnosis>138</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="45">
+		<address>"\a"@iana.org</address>
+		<category>15</category>
+		<diagnosis>11</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="46">
+		<address>"\""@iana.org</address>
+		<category>15</category>
+		<diagnosis>11</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="47">
+		<address>"\"@iana.org</address>
+		<category>255</category>
+		<diagnosis>146</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="48">
+		<address>"\\"@iana.org</address>
+		<category>15</category>
+		<diagnosis>11</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="49">
+		<address>test"@iana.org</address>
+		<category>255</category>
+		<diagnosis>138</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="50">
+		<address>"test@iana.org</address>
+		<category>255</category>
+		<diagnosis>146</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="51">
+		<address>"test"test@iana.org</address>
+		<category>255</category>
+		<diagnosis>135</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="52">
+		<address>test"text"@iana.org</address>
+		<category>255</category>
+		<diagnosis>138</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="53">
+		<address>"test""test"@iana.org</address>
+		<category>255</category>
+		<diagnosis>138</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="54">
+		<address>"test"."test"@iana.org</address>
+		<category>63</category>
+		<diagnosis>39</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="55">
+		<address>"test\ test"@iana.org</address>
+		<category>15</category>
+		<diagnosis>11</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="56">
+		<address>"test".test@iana.org</address>
+		<category>63</category>
+		<diagnosis>39</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="57">
+		<address>"test&#x2400;"@iana.org</address>
+		<category>255</category>
+		<diagnosis>139</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="58">
+		<address>"test\&#x2400;"@iana.org</address>
+		<category>63</category>
+		<diagnosis>35</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="59">
+		<address>"abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghj"@iana.org</address>
+		<comment>Quotes are still part of the length restriction</comment>
+		<category>127</category>
+		<diagnosis>67</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="60">
+		<address>"abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefg\h"@iana.org</address>
+		<comment>Quoted pair is still part of the length restriction</comment>
+		<category>127</category>
+		<diagnosis>67</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="61">
+		<address>test@[255.255.255.255]</address>
+		<category>15</category>
+		<diagnosis>12</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="62">
+		<address>test@a[255.255.255.255]</address>
+		<category>255</category>
+		<diagnosis>138</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="63">
+		<address>test@[255.255.255]</address>
+		<category>127</category>
+		<diagnosis>70</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="64">
+		<address>test@[255.255.255.255.255]</address>
+		<category>127</category>
+		<diagnosis>70</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="65">
+		<address>test@[255.255.255.256]</address>
+		<category>127</category>
+		<diagnosis>70</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="66">
+		<address>test@[1111:2222:3333:4444:5555:6666:7777:8888]</address>
+		<category>127</category>
+		<diagnosis>70</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="67">
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666:7777]</address>
+		<category>127</category>
+		<diagnosis>71</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="68">
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666:7777:8888]</address>
+		<category>15</category>
+		<diagnosis>12</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="69">
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666:7777:8888:9999]</address>
+		<category>127</category>
+		<diagnosis>71</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="70">
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666:7777:888G]</address>
+		<category>127</category>
+		<diagnosis>73</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="71">
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666::8888]</address>
+		<category>15</category>
+		<diagnosis>13</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="72">
+		<address>test@[IPv6:1111:2222:3333:4444:5555::8888]</address>
+		<category>15</category>
+		<diagnosis>12</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="73">
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666::7777:8888]</address>
+		<category>127</category>
+		<diagnosis>74</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="74">
+		<address>test@[IPv6::3333:4444:5555:6666:7777:8888]</address>
+		<category>127</category>
+		<diagnosis>75</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="75">
+		<address>test@[IPv6:::3333:4444:5555:6666:7777:8888]</address>
+		<category>15</category>
+		<diagnosis>12</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="76">
+		<address>test@[IPv6:1111::4444:5555::8888]</address>
+		<category>127</category>
+		<diagnosis>72</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="77">
+		<address>test@[IPv6:::]</address>
+		<category>15</category>
+		<diagnosis>12</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="78">
+		<address>test@[IPv6:1111:2222:3333:4444:5555:255.255.255.255]</address>
+		<category>127</category>
+		<diagnosis>71</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="79">
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666:255.255.255.255]</address>
+		<category>15</category>
+		<diagnosis>12</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="80">
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666:7777:255.255.255.255]</address>
+		<category>127</category>
+		<diagnosis>71</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="81">
+		<address>test@[IPv6:1111:2222:3333:4444::255.255.255.255]</address>
+		<category>15</category>
+		<diagnosis>12</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="82">
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666::255.255.255.255]</address>
+		<category>127</category>
+		<diagnosis>74</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="83">
+		<address>test@[IPv6:1111:2222:3333:4444:::255.255.255.255]</address>
+		<category>127</category>
+		<diagnosis>72</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="84">
+		<address>test@[IPv6::255.255.255.255]</address>
+		<category>127</category>
+		<diagnosis>75</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="85">
+		<address> test @iana.org</address>
+		<category>63</category>
+		<diagnosis>49</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="86">
+		<address>test@ iana .com</address>
+		<category>63</category>
+		<diagnosis>49</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="87">
+		<address>test . test@iana.org</address>
+		<category>63</category>
+		<diagnosis>39</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="88">
+		<address>&#x240D;&#x240A; test@iana.org</address>
+		<comment>FWS</comment>
+		<category>31</category>
+		<diagnosis>18</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="89">
+		<address>&#x240D;&#x240A; &#x240D;&#x240A; test@iana.org</address>
+		<comment>FWS with one line composed entirely of WSP -- only allowed as obsolete FWS (someone might allow only non-obsolete FWS)</comment>
+		<category>63</category>
+		<diagnosis>33</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="90">
+		<address>(comment)test@iana.org</address>
+		<category>31</category>
+		<diagnosis>17</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="91">
+		<address>((comment)test@iana.org</address>
+		<category>255</category>
+		<diagnosis>147</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="92">
+		<address>(comment(comment))test@iana.org</address>
+		<category>31</category>
+		<diagnosis>17</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="93">
+		<address>test@(comment)iana.org</address>
+		<category>63</category>
+		<diagnosis>49</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="94">
+		<address>test(comment)test@iana.org</address>
+		<category>255</category>
+		<diagnosis>134</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="95">
+		<address>test@(comment)[255.255.255.255]</address>
+		<category>63</category>
+		<diagnosis>49</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="96">
+		<address>(comment)abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghiklm@iana.org</address>
+		<category>31</category>
+		<diagnosis>17</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="97">
+		<address>test@(comment)abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.com</address>
+		<category>63</category>
+		<diagnosis>49</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="98">
+		<address>(comment)test@abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghik.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghik.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijk.abcdefghijklmnopqrstuvwxyzabcdefghijk.abcdefghijklmnopqrstu</address>
+		<category>31</category>
+		<diagnosis>17</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="99">
+		<address>test@iana.org&#x240A;</address>
+		<category>255</category>
+		<diagnosis>138</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="100">
+		<address>test@xn--hxajbheg2az3al.xn--jxalpdlp</address>
+		<category>0</category>
+		<diagnosis>0</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="101">
+		<address>xn--test@iana.org</address>
+		<comment>RFC 3490: "unless the
+   email standards are revised to invite the use of IDNA for local
+   parts, a domain label that holds the local part of an email address
+   SHOULD NOT begin with the ACE prefix, and even if it does, it is to
+   be interpreted literally as a local part that happens to begin with
+   the ACE prefix"</comment>
+		<category>0</category>
+		<diagnosis>0</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>true</valid>
+	</test>
+	<test id="102">
+		<address>test@iana.org-</address>
+		<category>255</category>
+		<diagnosis>145</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="103">
+		<address>"test@iana.org</address>
+		<category>255</category>
+		<diagnosis>146</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="104">
+		<address>(test@iana.org</address>
+		<category>255</category>
+		<diagnosis>147</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="105">
+		<address>test@(iana.org</address>
+		<category>255</category>
+		<diagnosis>147</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="106">
+		<address>test@[1.2.3.4</address>
+		<category>255</category>
+		<diagnosis>148</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="107">
+		<address>"test\"@iana.org</address>
+		<category>255</category>
+		<diagnosis>146</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="108">
+		<address>(comment\)test@iana.org</address>
+		<category>255</category>
+		<diagnosis>147</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="109">
+		<address>test@iana.org(comment\)</address>
+		<category>255</category>
+		<diagnosis>147</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="110">
+		<address>test@iana.org(comment\</address>
+		<category>255</category>
+		<diagnosis>141</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="112">
+		<address>test@[RFC-5322-domain-literal]</address>
+		<category>127</category>
+		<diagnosis>70</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="113">
+		<address>test@[RFC-5322]-domain-literal]</address>
+		<category>255</category>
+		<diagnosis>136</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="114">
+		<address>test@[RFC-5322-[domain-literal]</address>
+		<category>255</category>
+		<diagnosis>129</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="115">
+		<address>test@[RFC-5322-\&#x2407;-domain-literal]</address>
+		<comment>obs-dtext <strong>and</strong> obs-qp</comment>
+		<category>63</category>
+		<diagnosis>40</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="116">
+		<address>test@[RFC-5322-\&#x2409;-domain-literal]</address>
+		<category>63</category>
+		<diagnosis>40</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="117">
+		<address>test@[RFC-5322-\]-domain-literal]</address>
+		<category>63</category>
+		<diagnosis>40</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="118">
+		<address>test@[RFC-5322-domain-literal\]</address>
+		<category>255</category>
+		<diagnosis>148</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="119">
+		<address>test@[RFC-5322-domain-literal\</address>
+		<category>255</category>
+		<diagnosis>141</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="120">
+		<address>test@[RFC 5322 domain literal]</address>
+		<comment>Spaces are FWS in a domain literal</comment>
+		<category>31</category>
+		<diagnosis>18</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="121">
+		<address>test@[RFC-5322-domain-literal] (comment)</address>
+		<category>127</category>
+		<diagnosis>70</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="122">
+		<address>&#x7F;@iana.org</address>
+		<category>255</category>
+		<diagnosis>138</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="123">
+		<address>test@&#x7F;.org</address>
+		<category>255</category>
+		<diagnosis>138</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="124">
+		<address>"&#x7F;"@iana.org</address>
+		<category>63</category>
+		<diagnosis>34</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="125">
+		<address>"\&#x7F;"@iana.org</address>
+		<category>63</category>
+		<diagnosis>35</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="126">
+		<address>(&#x7F;)test@iana.org</address>
+		<category>63</category>
+		<diagnosis>37</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="127">
+		<address>test@iana.org&#x240D;</address>
+		<comment>No LF after the CR</comment>
+		<category>255</category>
+		<diagnosis>151</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="128">
+		<address>&#x240D;test@iana.org</address>
+		<comment>No LF after the CR</comment>
+		<category>255</category>
+		<diagnosis>151</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="129">
+		<address>"&#x240D;test"@iana.org</address>
+		<comment>No LF after the CR</comment>
+		<category>255</category>
+		<diagnosis>151</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="130">
+		<address>(&#x240D;)test@iana.org</address>
+		<comment>No LF after the CR</comment>
+		<category>255</category>
+		<diagnosis>151</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="131">
+		<address>test@iana.org(&#x240D;)</address>
+		<comment>No LF after the CR</comment>
+		<category>255</category>
+		<diagnosis>151</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="132">
+		<address>&#x240A;test@iana.org</address>
+		<category>255</category>
+		<diagnosis>138</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="133">
+		<address>"&#x240A;"@iana.org</address>
+		<category>255</category>
+		<diagnosis>139</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="134">
+		<address>"\&#x240A;"@iana.org</address>
+		<category>63</category>
+		<diagnosis>35</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="135">
+		<address>(&#x240A;)test@iana.org</address>
+		<category>255</category>
+		<diagnosis>140</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="136">
+		<address>&#x2407;@iana.org</address>
+		<category>255</category>
+		<diagnosis>138</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="137">
+		<address>test@&#x2407;.org</address>
+		<category>255</category>
+		<diagnosis>138</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="138">
+		<address>"&#x2407;"@iana.org</address>
+		<category>63</category>
+		<diagnosis>34</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="139">
+		<address>"\&#x2407;"@iana.org</address>
+		<category>63</category>
+		<diagnosis>35</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="140">
+		<address>(&#x2407;)test@iana.org</address>
+		<category>63</category>
+		<diagnosis>37</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="141">
+		<address>&#x240D;&#x240A;test@iana.org</address>
+		<comment>Not FWS because no actual white space</comment>
+		<category>255</category>
+		<diagnosis>150</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="142">
+		<address>&#x240D;&#x240A; &#x240D;&#x240A;test@iana.org</address>
+		<comment>Not obs-FWS because there must be white space on each "fold"</comment>
+		<category>255</category>
+		<diagnosis>150</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="143">
+		<address> &#x240D;&#x240A;test@iana.org</address>
+		<comment>Not FWS because no white space after the fold</comment>
+		<category>255</category>
+		<diagnosis>150</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="144">
+		<address> &#x240D;&#x240A; test@iana.org</address>
+		<comment>FWS</comment>
+		<category>31</category>
+		<diagnosis>18</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="145">
+		<address> &#x240D;&#x240A; &#x240D;&#x240A;test@iana.org</address>
+		<comment>Not FWS because no white space after the second fold</comment>
+		<category>255</category>
+		<diagnosis>150</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="146">
+		<address> &#x240D;&#x240A;&#x240D;&#x240A;test@iana.org</address>
+		<comment>Not FWS because no white space after either fold</comment>
+		<category>255</category>
+		<diagnosis>149</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="147">
+		<address> &#x240D;&#x240A;&#x240D;&#x240A; test@iana.org</address>
+		<comment>Not FWS because no white space after the first fold</comment>
+		<category>255</category>
+		<diagnosis>149</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="148">
+		<address>test@iana.org&#x240D;&#x240A; </address>
+		<comment>FWS</comment>
+		<category>31</category>
+		<diagnosis>18</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="149">
+		<address>test@iana.org&#x240D;&#x240A; &#x240D;&#x240A; </address>
+		<comment>FWS with one line composed entirely of WSP -- only allowed as obsolete FWS (someone might allow only non-obsolete FWS)</comment>
+		<category>63</category>
+		<diagnosis>33</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="150">
+		<address>test@iana.org&#x240D;&#x240A;</address>
+		<comment>Not FWS because no actual white space</comment>
+		<category>255</category>
+		<diagnosis>150</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="151">
+		<address>test@iana.org&#x240D;&#x240A; &#x240D;&#x240A;</address>
+		<comment>Not obs-FWS because there must be white space on each "fold"</comment>
+		<category>255</category>
+		<diagnosis>150</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="152">
+		<address>test@iana.org &#x240D;&#x240A;</address>
+		<comment>Not FWS because no white space after the fold</comment>
+		<category>255</category>
+		<diagnosis>150</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="153">
+		<address>test@iana.org &#x240D;&#x240A; </address>
+		<comment>FWS</comment>
+		<category>31</category>
+		<diagnosis>18</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="154">
+		<address>test@iana.org &#x240D;&#x240A; &#x240D;&#x240A;</address>
+		<comment>Not FWS because no white space after the second fold</comment>
+		<category>255</category>
+		<diagnosis>150</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="155">
+		<address>test@iana.org &#x240D;&#x240A;&#x240D;&#x240A;</address>
+		<comment>Not FWS because no white space after either fold</comment>
+		<category>255</category>
+		<diagnosis>149</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="156">
+		<address>test@iana.org &#x240D;&#x240A;&#x240D;&#x240A; </address>
+		<comment>Not FWS because no white space after the first fold</comment>
+		<category>255</category>
+		<diagnosis>149</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="157">
+		<address> test@iana.org</address>
+		<category>31</category>
+		<diagnosis>18</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+	<test id="158">
+		<address>test@iana.org </address>
+		<category>31</category>
+		<diagnosis>18</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
+		<valid>false</valid>
+	</test>
+</tests>
