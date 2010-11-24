@@ -34,7 +34,7 @@
  * @copyright	2008-2010 Dominic Sayers
  * @license	http://www.opensource.org/licenses/bsd-license.php BSD License
  * @link	http://www.dominicsayers.com/isemail
- * @version	3.0.5 - Second alpha of rewritten code
+ * @version	3.0.6 - Second alpha of rewritten code
  */
 
 // The quality of this code has been improved greatly by using PHPLint
@@ -62,9 +62,8 @@ if (!defined('ISEMAIL_VALID')) {
 	// Address is valid
 	define('ISEMAIL_VALID', 0);
 	// Address is valid but a DNS check was not successful
-	define('ISEMAIL_DNSWARN_NO_MX_RECORD', 4);
-	define('ISEMAIL_DNSWARN_NO_RECORD', 5);
-	define('ISEMAIL_DNSWARN_DOMAINNOTFOUND', 6);
+	define('ISEMAIL_DNSWARN_NO_MX_RECORD', 5);
+	define('ISEMAIL_DNSWARN_NO_RECORD', 6);
 	// Address is valid for SMTP but has unusual elements
 	define('ISEMAIL_RFC5321_TLD', 9);
 	define('ISEMAIL_RFC5321_TLDNUMERIC', 10);
@@ -1125,7 +1124,7 @@ if (!defined('ISEMAIL_VALID')) {
 		$result = @dns_get_record($parsedata[ISEMAIL_COMPONENT_DOMAIN], DNS_MX);	// Not using checkdnsrr because of a suspected bug in PHP 5.3 (http://bugs.php.net/bug.php?id=51844)
 
 		if ((is_bool($result) && !(bool) $result))
-			$return_status[] = ISEMAIL_DNSWARN_DOMAINNOTFOUND;			// Domain can't be found in DNS
+			$return_status[] = ISEMAIL_DNSWARN_NO_RECORD;			// Domain can't be found in DNS
 		else {
 			if (count($result) === 0) {
 				$return_status[]	= ISEMAIL_DNSWARN_NO_MX_RECORD;		// MX-record for domain can't be found

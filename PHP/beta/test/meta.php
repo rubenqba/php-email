@@ -34,7 +34,7 @@
  * @copyright	2008-2010 Dominic Sayers
  * @license	http://www.opensource.org/licenses/bsd-license.php BSD License
  * @link	http://www.dominicsayers.com/isemail
- * @version	3.0.5 - Second alpha of rewritten code
+ * @version	3.0.6 - Second alpha of rewritten code
  */
 
 
@@ -67,12 +67,12 @@ if (!defined('ISEMAIL_META_DESC')) {
 	// Grab the metadata
 	$document = new DOMDocument();
 	$document->load('./meta.xml');
-	$document->schemaValidate('./meta.xsd');	// allows us to getElementById
+	$document->schemaValidate('./meta.xsd');
         $XPath = new DOMXPath($document);
 
 	// If we received a value, need to find the associated constant name
 	if (is_int($status)) {
-	        $nodes		= $XPath->query("/meta/*/item/value[. = $status]/../@id");
+	        $nodes		= $XPath->query("/meta/*/item/value[. = '$status']/../@id");
 
 		$value		= $status;
 		$constant	= ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
@@ -84,9 +84,10 @@ if (!defined('ISEMAIL_META_DESC')) {
 	}
 
 	// Grab the element we need
-	$element = $document->getElementById($constant);
+//	$element = $document->getElementById($constant);	// Doesn't work on my host's installation (Siteground)
+	$nodes = $XPath->query("/meta/*/item[@id = '$constant']");
 
-	if (is_null($element)) return ISEMAIL_STRING_UNKNOWN;
+	if ($nodes->length === 0) return ISEMAIL_STRING_UNKNOWN; else $element = $nodes->item(0);
 
 	// Extract the bits we need
 	if ((bool) ($type & ISEMAIL_META_DESC)) {
@@ -102,7 +103,7 @@ if (!defined('ISEMAIL_META_DESC')) {
 	if ((bool) ($type & (ISEMAIL_META_SMTP))) {
 		$nodes		= $XPath->query('smtp', $element);
 		$smtp		= ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
-		$element_smtp	= $document->getElementById($smtp);
+		$element_smtp	= $XPath->query("/meta/*/item[@id = '$smtp']")->item(0);
 		$nodes		= $XPath->query('text', $element_smtp);
 
 		$return[ISEMAIL_META_SMTP] = ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
@@ -119,7 +120,7 @@ if (!defined('ISEMAIL_META_DESC')) {
 			$return[ISEMAIL_META_CAT_VALUE] = constant($category);
 
 		if ((bool) ($type & ISEMAIL_META_CAT_DESC)) {
-			$element_category	= $document->getElementById($category);
+			$element_category	= $XPath->query("/meta/*/item[@id = '$category']")->item(0);
 			$nodes			= $XPath->query('description', $element_category);
 
 			$return[ISEMAIL_META_CAT_DESC] = ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
@@ -136,7 +137,7 @@ if (!defined('ISEMAIL_META_DESC')) {
 
 		foreach ($references as $reference_node) {
 			$reference	= $reference_node->nodeValue;
-			$element_ref	= $document->getElementById($reference);
+			$element_ref	= $XPath->query("/meta/*/item[@id = '$reference']")->item(0);
 
 			if ((bool) ($type & ISEMAIL_META_REF_TEXT)) {
 				if (!array_key_exists(ISEMAIL_META_REF_TEXT, $return)) $return[ISEMAIL_META_REF_TEXT] = '';

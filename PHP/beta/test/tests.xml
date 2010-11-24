@@ -114,14 +114,14 @@ Date       Tests        Version Notes
 	<test id="12">
 		<address>test@e.com</address>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Michael Rushton</source>
 		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="13">
 		<address>test@iana.a</address>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Michael Rushton</source>
 		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
@@ -219,7 +219,7 @@ Date       Tests        Version Notes
 	<test id="27">
 		<address>test@abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.com</address>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Michael Rushton</source>
 		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
@@ -261,7 +261,7 @@ Date       Tests        Version Notes
 	<test id="33">
 		<address>test@iana.co-uk</address>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Michael Rushton</source>
 		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
@@ -289,14 +289,14 @@ Date       Tests        Version Notes
 	<test id="37">
 		<address>a@a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v</address>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Michael Rushton</source>
 		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="38">
 		<address>abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghiklm@abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghi</address>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Michael Rushton</source>
 		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>

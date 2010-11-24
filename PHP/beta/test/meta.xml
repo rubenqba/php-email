@@ -98,21 +98,15 @@ Date       Diagnoses    Version Notes
 			<smtp>ISEMAIL_META_SMTP_250_215</smtp>
 		</item>
 		<item id="ISEMAIL_DNSWARN_NO_MX_RECORD">
-			<value>4</value>
+			<value>5</value>
 			<category>ISEMAIL_DNSWARN</category>
 			<description>Couldn't find an MX record for this domain but an A-record does exist</description>
 			<smtp>ISEMAIL_META_SMTP_250_215</smtp>
 		</item>
 		<item id="ISEMAIL_DNSWARN_NO_RECORD">
-			<value>5</value>
-			<category>ISEMAIL_DNSWARN</category>
-			<description>Couldn't find an MX record or an A-record for this domain</description>
-			<smtp>ISEMAIL_META_SMTP_250_215</smtp>
-		</item>
-		<item id="ISEMAIL_DNSWARN_DOMAINNOTFOUND">
 			<value>6</value>
 			<category>ISEMAIL_DNSWARN</category>
-			<description>Couldn't find this domain in the Domain Name System</description>
+			<description>Couldn't find an MX record or an A-record for this domain</description>
 			<smtp>ISEMAIL_META_SMTP_250_215</smtp>
 		</item>
 		<item id="ISEMAIL_RFC5321_TLD">

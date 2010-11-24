@@ -85,7 +85,7 @@ Date       Tests        Version Notes
 		<address>x@x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x2</address>
 		<comment>Total length reduced to 254 characters so it's still valid</comment>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
@@ -93,7 +93,7 @@ Date       Tests        Version Notes
 		<address>1234567890123456789012345678901234567890123456789012345678901@12345678901234567890123456789012345678901234567890123456789.12345678901234567890123456789012345678901234567890123456789.123456789012345678901234567890123456789012345678901234567890123.iana.org</address>
 		<comment>Total length reduced to 254 characters so it's still valid</comment>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>RFC 3696 erratum 1690</source>
 		<sourcelink>http://www.rfc-editor.org/errata_search.php?rfc=3696&amp;eid=1690</sourcelink>
 	</test>
@@ -156,7 +156,7 @@ Date       Tests        Version Notes
 	<test id="18">
 		<address>first.last@x23456789012345678901234567890123456789012345678901234567890123.iana.org</address>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
@@ -170,7 +170,7 @@ Date       Tests        Version Notes
 	<test id="20">
 		<address>first.last@123.iana.org</address>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
@@ -752,7 +752,7 @@ Date       Tests        Version Notes
 	<test id="96">
 		<address>test@123.123.123.x123</address>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Dave Child</source>
 		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
 	</test>
@@ -774,14 +774,14 @@ Date       Tests        Version Notes
 	<test id="99">
 		<address>test@example.iana.org</address>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Dave Child</source>
 		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
 	</test>
 	<test id="100">
 		<address>test@example.example.iana.org</address>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Dave Child</source>
 		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
 	</test>
@@ -1571,14 +1571,14 @@ Date       Tests        Version Notes
 		<address>+@b.c</address>
 		<comment>TLDs can be any length</comment>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Paul Gregg</source>
 		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
 	</test>
 	<test id="204">
 		<address>+@b.com</address>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Paul Gregg</source>
 		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
 	</test>
@@ -1613,7 +1613,7 @@ Date       Tests        Version Notes
 	<test id="209">
 		<address>a@b.co-foo.uk</address>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Paul Gregg</source>
 		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
 	</test>
@@ -1649,7 +1649,7 @@ Date       Tests        Version Notes
 		<address>shaitan@my-domain.thisisminekthx</address>
 		<comment>Disagree with Paul Gregg here</comment>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Paul Gregg</source>
 		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
 	</test>
@@ -2164,7 +2164,7 @@ Date       Tests        Version Notes
 		<address>test@xn--example.com</address>
 		<comment>Address is at an Internationalized Domain Name (Punycode)</comment>
 		<category>ISEMAIL_DNSWARN</category>
-		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
 		<source>Michael Rushton</source>
 		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
