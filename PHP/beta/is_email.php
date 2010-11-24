@@ -34,7 +34,7 @@
  * @copyright	2008-2010 Dominic Sayers
  * @license	http://www.opensource.org/licenses/bsd-license.php BSD License
  * @link	http://www.dominicsayers.com/isemail
- * @version	3.0.1 - First alpha drop of new approach
+ * @version	3.0.5 - Second alpha of rewritten code
  */
 
 // The quality of this code has been improved greatly by using PHPLint
@@ -45,6 +45,117 @@
 	require_module 'standard';
 	require_module 'pcre';
 .*/
+
+if (!defined('ISEMAIL_VALID')) {
+/*:diagnostic constants start:*/
+// This part of the code is generated using data from test/meta.xml. Beware of making manual alterations
+	// Categories
+	define('ISEMAIL_VALID_CATEGORY', 1);
+	define('ISEMAIL_DNSWARN', 7);
+	define('ISEMAIL_RFC5321', 15);
+	define('ISEMAIL_CFWS', 31);
+	define('ISEMAIL_DEPREC', 63);
+	define('ISEMAIL_RFC5322', 127);
+	define('ISEMAIL_ERR', 255);
+
+	// Diagnoses
+	// Address is valid
+	define('ISEMAIL_VALID', 0);
+	// Address is valid but a DNS check was not successful
+	define('ISEMAIL_DNSWARN_NO_MX_RECORD', 4);
+	define('ISEMAIL_DNSWARN_NO_RECORD', 5);
+	define('ISEMAIL_DNSWARN_DOMAINNOTFOUND', 6);
+	// Address is valid for SMTP but has unusual elements
+	define('ISEMAIL_RFC5321_TLD', 9);
+	define('ISEMAIL_RFC5321_TLDNUMERIC', 10);
+	define('ISEMAIL_RFC5321_QUOTEDSTRING', 11);
+	define('ISEMAIL_RFC5321_ADDRESSLITERAL', 12);
+	define('ISEMAIL_RFC5321_IPV6DEPRECATED', 13);
+	// Address is valid within the message but cannot be used unmodified for the envelope
+	define('ISEMAIL_CFWS_COMMENT', 17);
+	define('ISEMAIL_CFWS_FWS', 18);
+	// Address contains deprecated elements but may still be valid in restricted contexts
+	define('ISEMAIL_DEPREC_LOCALPART', 33);
+	define('ISEMAIL_DEPREC_FWS', 34);
+	define('ISEMAIL_DEPREC_QTEXT', 35);
+	define('ISEMAIL_DEPREC_QP', 36);
+	define('ISEMAIL_DEPREC_COMMENT', 37);
+	define('ISEMAIL_DEPREC_CTEXT', 38);
+	define('ISEMAIL_DEPREC_CFWS_NEAR_AT', 49);
+	// The address is only valid according to the broad definition of RFC 5322. It is otherwise invalid.
+	define('ISEMAIL_RFC5322_DOMAIN', 65);
+	define('ISEMAIL_RFC5322_TOOLONG', 66);
+	define('ISEMAIL_RFC5322_LOCAL_TOOLONG', 67);
+	define('ISEMAIL_RFC5322_DOMAIN_TOOLONG', 68);
+	define('ISEMAIL_RFC5322_LABEL_TOOLONG', 69);
+	define('ISEMAIL_RFC5322_DOMAINLITERAL', 70);
+	define('ISEMAIL_RFC5322_DOMLIT_OBSDTEXT', 71);
+	define('ISEMAIL_RFC5322_IPV6_GRPCOUNT', 72);
+	define('ISEMAIL_RFC5322_IPV6_2X2XCOLON', 73);
+	define('ISEMAIL_RFC5322_IPV6_BADCHAR', 74);
+	define('ISEMAIL_RFC5322_IPV6_MAXGRPS', 75);
+	define('ISEMAIL_RFC5322_IPV6_COLONSTRT', 76);
+	define('ISEMAIL_RFC5322_IPV6_COLONEND', 77);
+	// Address is invalid for any purpose
+	define('ISEMAIL_ERR_EXPECTING_DTEXT', 129);
+	define('ISEMAIL_ERR_NOLOCALPART', 130);
+	define('ISEMAIL_ERR_NODOMAIN', 131);
+	define('ISEMAIL_ERR_CONSECUTIVEDOTS', 132);
+	define('ISEMAIL_ERR_ATEXT_AFTER_CFWS', 133);
+	define('ISEMAIL_ERR_ATEXT_AFTER_QS', 134);
+	define('ISEMAIL_ERR_ATEXT_AFTER_DOMLIT', 135);
+	define('ISEMAIL_ERR_EXPECTING_QPAIR', 136);
+	define('ISEMAIL_ERR_EXPECTING_ATEXT', 137);
+	define('ISEMAIL_ERR_EXPECTING_QTEXT', 138);
+	define('ISEMAIL_ERR_EXPECTING_CTEXT', 139);
+	define('ISEMAIL_ERR_BACKSLASHEND', 140);
+	define('ISEMAIL_ERR_DOT_START', 141);
+	define('ISEMAIL_ERR_DOT_END', 142);
+	define('ISEMAIL_ERR_DOMAINHYPHENSTART', 143);
+	define('ISEMAIL_ERR_DOMAINHYPHENEND', 144);
+	define('ISEMAIL_ERR_UNCLOSEDQUOTEDSTR', 145);
+	define('ISEMAIL_ERR_UNCLOSEDCOMMENT', 146);
+	define('ISEMAIL_ERR_UNCLOSEDDOMLIT', 147);
+	define('ISEMAIL_ERR_FWS_CRLF_X2', 148);
+	define('ISEMAIL_ERR_FWS_CRLF_END', 149);
+	define('ISEMAIL_ERR_CR_NO_LF', 150);
+// End of generated code
+/*:diagnostic constants end:*/
+
+	// function control
+	define('ISEMAIL_THRESHOLD'		, 16);
+	define('ISEMAIL_DIAGNOSE'		, 256);
+
+	// Email parts
+	define('ISEMAIL_COMPONENT_LOCALPART'	, 0);
+	define('ISEMAIL_COMPONENT_DOMAIN'	, 1);
+	define('ISEMAIL_COMPONENT_LITERAL'	, 2);
+	define('ISEMAIL_CONTEXT_COMMENT'	, 3);
+	define('ISEMAIL_CONTEXT_FWS'		, 4);
+	define('ISEMAIL_CONTEXT_QUOTEDSTRING'	, 5);
+	define('ISEMAIL_CONTEXT_QUOTEDPAIR'	, 6);
+
+	// Miscellaneous string constants
+	define('ISEMAIL_STRING_AT'		, '@');
+	define('ISEMAIL_STRING_BACKSLASH'	, '\\');
+	define('ISEMAIL_STRING_DOT'		, '.');
+	define('ISEMAIL_STRING_DQUOTE'		, '"');
+	define('ISEMAIL_STRING_OPENPARENTHESIS'	, '(');
+	define('ISEMAIL_STRING_CLOSEPARENTHESIS', ')');
+	define('ISEMAIL_STRING_OPENSQBRACKET'	, '[');
+	define('ISEMAIL_STRING_CLOSESQBRACKET'	, ']');
+	define('ISEMAIL_STRING_HYPHEN'		, '-');
+	define('ISEMAIL_STRING_COLON'		, ':');
+	define('ISEMAIL_STRING_DOUBLECOLON'	, '::');
+	define('ISEMAIL_STRING_SP'		, ' ');
+	define('ISEMAIL_STRING_HTAB'		, "\t");
+	define('ISEMAIL_STRING_CR'		, "\r");
+	define('ISEMAIL_STRING_LF'		, "\n");
+	define('ISEMAIL_STRING_IPV6TAG'		, 'IPv6:');
+	// US-ASCII visible characters not valid for atext (http://tools.ietf.org/html/rfc5322#section-3.2.3)
+	define('ISEMAIL_STRING_SPECIALS'	, '()<>[]:;@\\,."');
+}
+
 /**
  * Check that an email address conforms to RFCs 5321, 5322 and others
  *
@@ -66,9 +177,9 @@
  * 					If omitted or passed as false then is_email() will return
  * 					true or false rather than an integer error or warning.
  * @param array(string)string
- * 			&$address_parts	If passed, returns the parsed address components
+ * 			&$parsedata	If passed, returns the parsed address components
  */
-/*.mixed.*/ function is_email($email, $checkDNS = false, $errorlevel = false, /*. array(string)string .*/ &$address_parts = array()) {
+/*.mixed.*/ function is_email($email, $checkDNS = false, $errorlevel = false, /*. array(string)string .*/ &$parsedata = array()) {
 	// Check that $email is a valid address. Read the following RFCs to understand the constraints:
 	// 	(http://tools.ietf.org/html/rfc5321)
 	// 	(http://tools.ietf.org/html/rfc5322)
@@ -95,110 +206,6 @@
 // version 3.0: Introduced status categories
 // revision 2.5: some syntax changes to make it more PHPLint-friendly. Should be functionally identical.
 
-	if (!defined('ISEMAIL_VALID')) {
-		// No errors
-		define('ISEMAIL_VALID'			, 0);
-		// DNS irregularities (if checked)
-		define('ISEMAIL_DNSWARN_NO_MX_RECORD'	, 4);
-		define('ISEMAIL_DNSWARN_NO_RECORD'	, 5);
-		define('ISEMAIL_DNSWARN_DOMAINNOTFOUND'	, 6);
-		define('ISEMAIL_DNSWARN'		, 7);
-		// Warnings (but still RFC 5321 valid)
-		define('ISEMAIL_RFC5321_TLD'		, 9);
-		define('ISEMAIL_RFC5321_TLDNUMERIC'	, 10);
-		define('ISEMAIL_RFC5321_QUOTEDSTRING'	, 11);
-		define('ISEMAIL_RFC5321_ADDRESSLITERAL'	, 12);
-		define('ISEMAIL_RFC5321_IPV6DEPRECATED'	, 13);
-		define('ISEMAIL_RFC5321_UNNECESSARY'	, 14);
-		define('ISEMAIL_RFC5321'		, 15);
-		// Validity threshold
-		define('ISEMAIL_THRESHOLD'		, 16);
-		// RFC 5322 valid
-		define('ISEMAIL_CFWS_COMMENT'		, 17);
-		define('ISEMAIL_CFWS_FWS'		, 18);
-		define('ISEMAIL_CFWS'			, 31);
-		// RFC 5322 valid but contains obsolete or deprecated syntax
-		define('ISEMAIL_DEPREC_FWS'		, 33);	// Obsolete (33-47)
-		define('ISEMAIL_DEPREC_QTEXT'		, 34);
-		define('ISEMAIL_DEPREC_QP'		, 35);
-		define('ISEMAIL_DEPREC_COMMENT'		, 36);
-		define('ISEMAIL_DEPREC_CTEXT'		, 37);
-		define('ISEMAIL_DEPREC_DOMAIN'		, 38);
-		define('ISEMAIL_DEPREC_LOCALPART'	, 39);
-		define('ISEMAIL_DEPREC_DTEXT'		, 40);
-		define('ISEMAIL_DEPREC_CFWS_NEAR_AT'	, 49);	// Otherwise deprecated (49-62)
-		define('ISEMAIL_DEPREC'			, 63);
-		// RFC 5322 valid but ignores related RFCs 5321 & 1035
-		define('ISEMAIL_RFC5322_DOMAIN'		, 65);
-		define('ISEMAIL_RFC5322_TOOLONG'	, 66);
-		define('ISEMAIL_RFC5322_LOCAL_TOOLONG'	, 67);
-		define('ISEMAIL_RFC5322_DOMAIN_TOOLONG'	, 68);
-		define('ISEMAIL_RFC5322_LABEL_TOOLONG'	, 69);
-		define('ISEMAIL_RFC5322_DOMLIT_PREFIX'	, 70);
-		define('ISEMAIL_RFC5322_IPV6_GRPCOUNT'	, 71);
-		define('ISEMAIL_RFC5322_IPV6_2X2XCOLON'	, 72);
-		define('ISEMAIL_RFC5322_IPV6_BADCHAR'	, 73);
-		define('ISEMAIL_RFC5322_IPV6_MAXGRPS'	, 74);
-		define('ISEMAIL_RFC5322_IPV6_COLONSTRT'	, 75);
-		define('ISEMAIL_RFC5322_IPV6_COLONEND'	, 76);
-		define('ISEMAIL_RFC5322'		, 127);
-		// Errors (invalid address)
-		define('ISEMAIL_ERR_EXPECTING_DTEXT'	, 129);
-		define('ISEMAIL_ERR_NOAT'		, 130);
-		define('ISEMAIL_ERR_NOLOCALPART'	, 131);
-		define('ISEMAIL_ERR_NODOMAIN'		, 132);
-		define('ISEMAIL_ERR_CONSECUTIVEDOTS'	, 133);
-		define('ISEMAIL_ERR_ATEXT_AFTER_CFWS'	, 134);
-		define('ISEMAIL_ERR_ATEXT_AFTER_QS'	, 135);
-		define('ISEMAIL_ERR_ATEXT_AFTER_DOMLIT'	, 136);
-		define('ISEMAIL_ERR_EXPECTING_QPAIR'	, 137);
-		define('ISEMAIL_ERR_EXPECTING_ATEXT'	, 138);
-		define('ISEMAIL_ERR_EXPECTING_QTEXT'	, 139);
-		define('ISEMAIL_ERR_EXPECTING_CTEXT'	, 140);
-		define('ISEMAIL_ERR_BACKSLASHEND'	, 141);
-		define('ISEMAIL_ERR_DOT_START'		, 142);
-		define('ISEMAIL_ERR_DOT_END'		, 143);
-		define('ISEMAIL_ERR_DOMAINHYPHENSTART'	, 144);
-		define('ISEMAIL_ERR_DOMAINHYPHENEND'	, 145);
-		define('ISEMAIL_ERR_UNCLOSEDQUOTEDSTR'	, 146);
-		define('ISEMAIL_ERR_UNCLOSEDCOMMENT'	, 147);
-		define('ISEMAIL_ERR_UNCLOSEDDOMLIT'	, 148);
-		define('ISEMAIL_ERR_FWS_CRLF_X2'	, 149);
-		define('ISEMAIL_ERR_FWS_CRLF_END'	, 150);
-		define('ISEMAIL_ERR_CR_NO_LF'		, 151);
-		define('ISEMAIL_ERR'			, 255);
-		define('ISEMAIL_DIAGNOSE'		, 256);
-
-		// Email parts
-		define('ISEMAIL_COMPONENT_LOCALPART'	, 0);
-		define('ISEMAIL_COMPONENT_DOMAIN'	, 1);
-		define('ISEMAIL_COMPONENT_LITERAL'	, 2);
-		define('ISEMAIL_CONTEXT_COMMENT'	, 3);
-		define('ISEMAIL_CONTEXT_FWS'		, 4);
-		define('ISEMAIL_CONTEXT_QUOTEDSTRING'	, 5);
-		define('ISEMAIL_CONTEXT_QUOTEDPAIR'	, 6);
-
-		// Miscellaneous string constants
-		define('ISEMAIL_STRING_AT'		, '@');
-		define('ISEMAIL_STRING_BACKSLASH'	, '\\');
-		define('ISEMAIL_STRING_DOT'		, '.');
-		define('ISEMAIL_STRING_DQUOTE'		, '"');
-		define('ISEMAIL_STRING_OPENPARENTHESIS'	, '(');
-		define('ISEMAIL_STRING_CLOSEPARENTHESIS', ')');
-		define('ISEMAIL_STRING_OPENSQBRACKET'	, '[');
-		define('ISEMAIL_STRING_CLOSESQBRACKET'	, ']');
-		define('ISEMAIL_STRING_HYPHEN'		, '-');
-		define('ISEMAIL_STRING_COLON'		, ':');
-		define('ISEMAIL_STRING_DOUBLECOLON'	, '::');
-		define('ISEMAIL_STRING_SP'		, ' ');
-		define('ISEMAIL_STRING_HTAB'		, "\t");
-		define('ISEMAIL_STRING_CR'		, "\r");
-		define('ISEMAIL_STRING_LF'		, "\n");
-		define('ISEMAIL_STRING_IPV6TAG'		, 'IPv6:');
-		// US-ASCII visible characters not valid for atext (http://tools.ietf.org/html/rfc5322#section-3.2.3)
-		define('ISEMAIL_STRING_SPECIALS'	, '()<>[]:;@\\,."');
-	}
-
 	if (is_bool($errorlevel)) {
 		if ((bool) $errorlevel) {
 			$diagnose	= true;
@@ -217,8 +224,7 @@
 		}
 	}
 
-	if ($diagnose) /*.mixed.*/ $return_status = ISEMAIL_VALID; else $return_status = true;
-// version 2.0: Enhance $diagnose parameter to $errorlevel
+	$return_status = array(ISEMAIL_VALID);
 
 	// Parse the address into components, character by character
 	$rawLength	= strlen($email);
@@ -227,12 +233,12 @@
 	$context_prior	= ISEMAIL_COMPONENT_LOCALPART;	// Where we just came from
 	$token		= '';				// The current character
 	$token_prior	= '';				// The previous character
-	$address_parts	= array(
+	$parsedata	= array(
 				ISEMAIL_COMPONENT_LOCALPART	=> '',
 				ISEMAIL_COMPONENT_DOMAIN	=> ''
 			       );			// For the components of the address
 
-	$address_atoms	= array(
+	$atomlist	= array(
 				ISEMAIL_COMPONENT_LOCALPART	=> array(''),
 				ISEMAIL_COMPONENT_DOMAIN	=> array('')
 			       );			// For the dot-atom elements of the address
@@ -244,7 +250,7 @@
 //-echo "<table style=\"clear:left;\">"; // debug
 	for ($i = 0; $i < $rawLength; $i++) {
 		$token = $email[$i];
-//-echo "<tr><td><strong>$context|",(($end_or_die) ? 'true' : 'false'),"|$token|$return_status</strong></td>"; // debug
+//-echo "<tr><td><strong>$context|",(($end_or_die) ? 'true' : 'false'),"|$token|" . max($return_status) . "</strong></td>"; // debug
 
 		switch ($context) {
 		//-------------------------------------------------------------
@@ -272,10 +278,10 @@
 			case ISEMAIL_STRING_OPENPARENTHESIS:
 				if ($element_len === 0)
 					// Comments are OK at the beginning of an element
-					$return_status	= max($return_status, (($element_count === 0) ? ISEMAIL_CFWS_COMMENT : ISEMAIL_DEPREC_COMMENT));
+					$return_status[]	= ($element_count === 0) ? ISEMAIL_CFWS_COMMENT : ISEMAIL_DEPREC_COMMENT;
 				else {
-					$return_status	= max($return_status, ISEMAIL_CFWS_COMMENT);
-					$end_or_die	= true;	// We can't start a comment in the middle of an element, so this better be the end
+					$return_status[]	= ISEMAIL_CFWS_COMMENT;
+					$end_or_die		= true;	// We can't start a comment in the middle of an element, so this better be the end
 				}
 
 				$context_stack[]	= $context;
@@ -285,17 +291,17 @@
 			case ISEMAIL_STRING_DOT:
 				if ($element_len === 0)
 					// Another dot, already?
-					$return_status	= ($element_count === 0) ? ISEMAIL_ERR_DOT_START : ISEMAIL_ERR_CONSECUTIVEDOTS;	// Fatal error
+					$return_status[] = ($element_count === 0) ? ISEMAIL_ERR_DOT_START : ISEMAIL_ERR_CONSECUTIVEDOTS;	// Fatal error
 				else
 					// The entire local-part can be a quoted string for RFC 5321
 					// If it's just one atom that is quoted then it's an RFC 5322 obsolete form
-					if ($end_or_die) $return_status = max($return_status, ISEMAIL_DEPREC_LOCALPART);
+					if ($end_or_die) $return_status[] = ISEMAIL_DEPREC_LOCALPART;
 
 					$end_or_die	= false;	// CFWS & quoted strings are OK again now we're at the beginning of an element (although they are obsolete forms)
 					$element_len	= 0;
 					$element_count++;
-					$address_parts[ISEMAIL_COMPONENT_LOCALPART]			.= $token;
-					$address_atoms[ISEMAIL_COMPONENT_LOCALPART][$element_count]	= '';
+					$parsedata[ISEMAIL_COMPONENT_LOCALPART]			.= $token;
+					$atomlist[ISEMAIL_COMPONENT_LOCALPART][$element_count]	= '';
 
 				break;
 			// Quoted string
@@ -303,25 +309,25 @@
 				if ($element_len === 0) {
 					// The entire local-part can be a quoted string for RFC 5321
 					// If it's just one atom that is quoted then it's an RFC 5322 obsolete form
-					$return_status		= max($return_status, (($element_count === 0) ? ISEMAIL_RFC5321_QUOTEDSTRING : ISEMAIL_DEPREC_LOCALPART));
+					$return_status[]	= ($element_count === 0) ? ISEMAIL_RFC5321_QUOTEDSTRING : ISEMAIL_DEPREC_LOCALPART;
 
-					$address_parts[ISEMAIL_COMPONENT_LOCALPART]			.= $token;
-					$address_atoms[ISEMAIL_COMPONENT_LOCALPART][$element_count]	.= $token;
+					$parsedata[ISEMAIL_COMPONENT_LOCALPART]			.= $token;
+					$atomlist[ISEMAIL_COMPONENT_LOCALPART][$element_count]	.= $token;
 					$element_len++;
 					$end_or_die		= true;	// Quoted string must be the entire element
 					$context_stack[]	= $context;
 					$context		= ISEMAIL_CONTEXT_QUOTEDSTRING;
 				} else {
-					$return_status		= max($return_status, ISEMAIL_ERR_EXPECTING_ATEXT);	// Fatal error
+					$return_status[]	= ISEMAIL_ERR_EXPECTING_ATEXT;	// Fatal error
 				}
 
 				break;
 			// Folding White Space
-			case ISEMAIL_STRING_CR:		if ((++$i === $rawLength) || ($email[$i] !== ISEMAIL_STRING_LF)) {$return_status = ISEMAIL_ERR_CR_NO_LF;	break;}	// Fatal error
+			case ISEMAIL_STRING_CR:		if ((++$i === $rawLength) || ($email[$i] !== ISEMAIL_STRING_LF)) {$return_status[] = ISEMAIL_ERR_CR_NO_LF;	break;}	// Fatal error
 			case ISEMAIL_STRING_SP:
 			case ISEMAIL_STRING_HTAB:
 				if ($element_len === 0)
-					$return_status = max($return_status, (($element_count === 0) ? ISEMAIL_CFWS_FWS : ISEMAIL_DEPREC_FWS));
+					$return_status[] = ($element_count === 0) ? ISEMAIL_CFWS_FWS : ISEMAIL_DEPREC_FWS;
 				else
 					$end_or_die = true;	// We can't start FWS in the middle of an element, so this better be the end
 
@@ -335,14 +341,14 @@
 				// At this point we should have a valid local-part
 				if (count($context_stack) !== 1) die('Unexpected item on context stack');
 
-				if	($address_parts[ISEMAIL_COMPONENT_LOCALPART] === '')
-								$return_status = max($return_status, ISEMAIL_ERR_NOLOCALPART);	// Fatal error
-				elseif	($element_len === 0)	$return_status = max($return_status, ISEMAIL_ERR_DOT_END);	// Fatal error
+				if	($parsedata[ISEMAIL_COMPONENT_LOCALPART] === '')
+								$return_status[]	= ISEMAIL_ERR_NOLOCALPART;	// Fatal error
+				elseif	($element_len === 0)	$return_status[]	= ISEMAIL_ERR_DOT_END;	// Fatal error
 				// http://tools.ietf.org/html/rfc5321#section-4.5.3.1.1
 				//   The maximum total length of a user name or other local-part is 64
 				//   octets.
-				elseif	(strlen($address_parts[ISEMAIL_COMPONENT_LOCALPART]) > 64)
-								$return_status = max($return_status, ISEMAIL_RFC5322_LOCAL_TOOLONG);
+				elseif	(strlen($parsedata[ISEMAIL_COMPONENT_LOCALPART]) > 64)
+								$return_status[]	= ISEMAIL_RFC5322_LOCAL_TOOLONG;
 				// http://tools.ietf.org/html/rfc5322#section-3.4.1
 				//   Comments and folding white space
 				//   SHOULD NOT be used around the "@" in the addr-spec.
@@ -354,7 +360,7 @@
 				//    implications should be understood and the case carefully weighed
 				//    before implementing any behavior described with this label.
 				elseif	(($context_prior === ISEMAIL_CONTEXT_COMMENT) || ($context_prior === ISEMAIL_CONTEXT_FWS))
-								$return_status = max($return_status, ISEMAIL_DEPREC_CFWS_NEAR_AT);
+								$return_status[]	= ISEMAIL_DEPREC_CFWS_NEAR_AT;
 
 				// Clear everything down for the domain parsing
 				$context	= ISEMAIL_COMPONENT_DOMAIN;	// Where we are
@@ -383,10 +389,10 @@
 					switch ($context_prior) {
 					case ISEMAIL_CONTEXT_COMMENT:
 					case ISEMAIL_CONTEXT_FWS:
-						$return_status = max($return_status, ISEMAIL_ERR_ATEXT_AFTER_CFWS);
+						$return_status[]	= ISEMAIL_ERR_ATEXT_AFTER_CFWS;
 						break;
 					case ISEMAIL_CONTEXT_QUOTEDSTRING:
-						$return_status = max($return_status, ISEMAIL_ERR_ATEXT_AFTER_QS);
+						$return_status[]	= ISEMAIL_ERR_ATEXT_AFTER_QS;
 						break;
 					default:
 						die ("More atext found where none is allowed, but unrecognised prior context: $context_prior");
@@ -396,10 +402,10 @@
 					$ord		= ord($token);
 
 					if (($ord < 33) || ($ord > 126) || ($ord === 10) || (!is_bool(strpos(ISEMAIL_STRING_SPECIALS, $token))))
-						$return_status = max($return_status, ISEMAIL_ERR_EXPECTING_ATEXT);	// Fatal error
+						$return_status[]	= ISEMAIL_ERR_EXPECTING_ATEXT;	// Fatal error
 
-					$address_parts[ISEMAIL_COMPONENT_LOCALPART]			.= $token;
-					$address_atoms[ISEMAIL_COMPONENT_LOCALPART][$element_count]	.= $token;
+					$parsedata[ISEMAIL_COMPONENT_LOCALPART]			.= $token;
+					$atomlist[ISEMAIL_COMPONENT_LOCALPART][$element_count]	.= $token;
 					$element_len++;
 				}
 			}
@@ -456,10 +462,10 @@
 					// Comments at the start of the domain are deprecated in the text
 					// Comments at the start of a subdomain are obs-domain
 					// (http://tools.ietf.org/html/rfc5322#section-3.4.1)
-					$return_status	= max($return_status, (($element_count === 0) ? ISEMAIL_DEPREC_CFWS_NEAR_AT : ISEMAIL_DEPREC_COMMENT));
+					$return_status[]	= ($element_count === 0) ? ISEMAIL_DEPREC_CFWS_NEAR_AT : ISEMAIL_DEPREC_COMMENT;
 				else {
-					$return_status	= max($return_status, ISEMAIL_CFWS_COMMENT);
-					$end_or_die	= true;	// We can't start a comment in the middle of an element, so this better be the end
+					$return_status[]	= ISEMAIL_CFWS_COMMENT;
+					$end_or_die		= true;	// We can't start a comment in the middle of an element, so this better be the end
 				}
 
 				$context_stack[]	= $context;
@@ -469,10 +475,10 @@
 			case ISEMAIL_STRING_DOT:
 				if ($element_len === 0)
 					// Another dot, already?
-					$return_status	= ($element_count === 0) ? ISEMAIL_ERR_DOT_START : ISEMAIL_ERR_CONSECUTIVEDOTS;	// Fatal error
+					$return_status[]	= ($element_count === 0) ? ISEMAIL_ERR_DOT_START : ISEMAIL_ERR_CONSECUTIVEDOTS;	// Fatal error
 				elseif ($hyphen_flag)
 					// Previous subdomain ended in a hyphen
-					$return_status	= max($return_status, ISEMAIL_ERR_DOMAINHYPHENEND);	// Fatal error
+					$return_status[]	= ISEMAIL_ERR_DOMAINHYPHENEND;	// Fatal error
 				else
 					// Nowhere in RFC 5321 does it say explicitly that the
 					// domain part of a Mailbox must be a valid domain according
@@ -486,38 +492,38 @@
 					//
 					// http://tools.ietf.org/html/rfc1035#section-2.3.4
 					// labels          63 octets or less
-					if ($element_len > 63) $return_status = max($return_status, ISEMAIL_RFC5322_LABEL_TOOLONG);
+					if ($element_len > 63) $return_status[]	= ISEMAIL_RFC5322_LABEL_TOOLONG;
 
 					$end_or_die		= false;	// CFWS is OK again now we're at the beginning of an element (although it may be obsolete CFWS)
 					$element_len		= 0;
 					$element_count++;
-					$address_atoms[ISEMAIL_COMPONENT_DOMAIN][$element_count]	= '';
-					$address_parts[ISEMAIL_COMPONENT_DOMAIN]			.= $token;
+					$atomlist[ISEMAIL_COMPONENT_DOMAIN][$element_count]	= '';
+					$parsedata[ISEMAIL_COMPONENT_DOMAIN]			.= $token;
 
 				break;
 			// Domain literal
 			case ISEMAIL_STRING_OPENSQBRACKET:
-				if ($address_parts[ISEMAIL_COMPONENT_DOMAIN] === '') {
+				if ($parsedata[ISEMAIL_COMPONENT_DOMAIN] === '') {
 					$end_or_die		= true;	// Domain literal must be the only component
 					$element_len++;
 					$context_stack[]	= $context;
 					$context		= ISEMAIL_COMPONENT_LITERAL;
-					$address_parts[ISEMAIL_COMPONENT_DOMAIN]			.= $token;
-					$address_atoms[ISEMAIL_COMPONENT_DOMAIN][$element_count]	.= $token;
-					$address_parts[ISEMAIL_COMPONENT_LITERAL]			= '';
+					$parsedata[ISEMAIL_COMPONENT_DOMAIN]			.= $token;
+					$atomlist[ISEMAIL_COMPONENT_DOMAIN][$element_count]	.= $token;
+					$parsedata[ISEMAIL_COMPONENT_LITERAL]			= '';
 				} else {
-					$return_status		= max($return_status, ISEMAIL_ERR_EXPECTING_ATEXT);	// Fatal error
+					$return_status[]	= ISEMAIL_ERR_EXPECTING_ATEXT;	// Fatal error
 				}
 
 				break;
 			// Folding White Space
-			case ISEMAIL_STRING_CR:		if ((++$i === $rawLength) || ($email[$i] !== ISEMAIL_STRING_LF)) {$return_status = ISEMAIL_ERR_CR_NO_LF;	break;}	// Fatal error
+			case ISEMAIL_STRING_CR:		if ((++$i === $rawLength) || ($email[$i] !== ISEMAIL_STRING_LF)) {$return_status[]	= ISEMAIL_ERR_CR_NO_LF;	break;}	// Fatal error
 			case ISEMAIL_STRING_SP:
 			case ISEMAIL_STRING_HTAB:
 				if ($element_len === 0)
-					$return_status	= max($return_status, (($element_count === 0) ? ISEMAIL_DEPREC_CFWS_NEAR_AT : ISEMAIL_DEPREC_FWS));
+					$return_status[]	= ($element_count === 0) ? ISEMAIL_DEPREC_CFWS_NEAR_AT : ISEMAIL_DEPREC_FWS;
 				else {
-					$return_status	= max($return_status, ISEMAIL_CFWS_FWS);
+					$return_status[]	= ISEMAIL_CFWS_FWS;
 					$end_or_die	= true;	// We can't start FWS in the middle of an element, so this better be the end
 				}
 
@@ -554,10 +560,10 @@
 					switch ($context_prior) {
 					case ISEMAIL_CONTEXT_COMMENT:
 					case ISEMAIL_CONTEXT_FWS:
-						$return_status = max($return_status, ISEMAIL_ERR_ATEXT_AFTER_CFWS);
+						$return_status[]	= ISEMAIL_ERR_ATEXT_AFTER_CFWS;
 						break;
 					case ISEMAIL_COMPONENT_LITERAL:
-						$return_status = max($return_status, ISEMAIL_ERR_ATEXT_AFTER_DOMLIT);
+						$return_status[]	= ISEMAIL_ERR_ATEXT_AFTER_DOMLIT;
 						break;
 					default:
 						die ("More atext found where none is allowed, but unrecognised prior context: $context_prior");
@@ -568,21 +574,21 @@
 				$hyphen_flag	= false;	// Assume this token isn't a hyphen unless we discover it is
 
 				if (($ord < 33) || ($ord > 126) || (!is_bool(strpos(ISEMAIL_STRING_SPECIALS, $token)))) {
-					$return_status = max($return_status, ISEMAIL_ERR_EXPECTING_ATEXT);	// Fatal error
+					$return_status[]	= ISEMAIL_ERR_EXPECTING_ATEXT;	// Fatal error
 				} elseif ($token === ISEMAIL_STRING_HYPHEN) {
 					if ($element_len === 0) {
 						// Hyphens can't be at the beginning of a subdomain
-						$return_status = max($return_status, ISEMAIL_ERR_DOMAINHYPHENSTART);	// Fatal error
+						$return_status[]	= ISEMAIL_ERR_DOMAINHYPHENSTART;	// Fatal error
 					}
 
 					$hyphen_flag = true;
 				} elseif (!(($ord > 47 && $ord < 58) || ($ord > 64 && $ord < 91) || ($ord > 96 && $ord < 123))) {
 					// Not an RFC 5321 subdomain, but still OK by RFC 5322
-					$return_status	= max($return_status, ISEMAIL_RFC5322_DOMAIN);
+					$return_status[]	= ISEMAIL_RFC5322_DOMAIN;
 				}
 
-				$address_parts[ISEMAIL_COMPONENT_DOMAIN]			.= $token;
-				$address_atoms[ISEMAIL_COMPONENT_DOMAIN][$element_count]	.= $token;
+				$parsedata[ISEMAIL_COMPONENT_DOMAIN]			.= $token;
+				$atomlist[ISEMAIL_COMPONENT_DOMAIN][$element_count]	.= $token;
 				$element_len++;
 			}
 
@@ -602,7 +608,7 @@
 			switch ($token) {
 			// End of domain literal
 			case ISEMAIL_STRING_CLOSESQBRACKET:
-				if ($return_status < ISEMAIL_RFC5321) {
+				if (max($return_status) < ISEMAIL_DEPREC) {
 					// Could be a valid RFC 5321 address literal, so let's check
 
 					// http://tools.ietf.org/html/rfc5321#section-4.1.2
@@ -658,7 +664,7 @@
 					$max_groups	= 8;
 					$matchesIP	= array();
 			/*.mixed.*/	$index		= false;
-					$addressliteral	= $address_parts[ISEMAIL_COMPONENT_LITERAL];
+					$addressliteral	= $parsedata[ISEMAIL_COMPONENT_LITERAL];
 
 					// Extract IPv4 part from the end of the address-literal (if there is one)
 					if (preg_match('/\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/', $addressliteral, $matchesIP) > 0) {
@@ -668,9 +674,9 @@
 
 					if ($index === 0) {
 						// Nothing there except a valid IPv4 address, so...
-						$return_status = max($return_status, ISEMAIL_RFC5321_ADDRESSLITERAL);
+						$return_status[]	= ISEMAIL_RFC5321_ADDRESSLITERAL;
 					} elseif (strncasecmp($addressliteral, ISEMAIL_STRING_IPV6TAG, 5) !== 0) {
-						$return_status = max($return_status, ISEMAIL_RFC5322_DOMLIT_PREFIX);
+						$return_status[]	= ISEMAIL_RFC5322_DOMAINLITERAL;
 					} else {
 						$IPv6		= substr($addressliteral, 5);
 						$matchesIP	= explode(ISEMAIL_STRING_COLON, $IPv6);	// Revision 2.7: Daniel Marschall's new IPv6 testing strategy
@@ -680,48 +686,50 @@
 						if ($index === false) {
 							// We need exactly the right number of groups
 							if ($groupCount !== $max_groups)
-								$return_status = max($return_status, ISEMAIL_RFC5322_IPV6_GRPCOUNT);
+								$return_status[]	= ISEMAIL_RFC5322_IPV6_GRPCOUNT;
 						} else {
 							if ($index !== strrpos($IPv6,ISEMAIL_STRING_DOUBLECOLON))
-								$return_status = max($return_status, ISEMAIL_RFC5322_IPV6_2X2XCOLON);
+								$return_status[]	= ISEMAIL_RFC5322_IPV6_2X2XCOLON;
 							else {
 								if ($index === 0 || $index === (strlen($IPv6) - 2)) $max_groups++;	// RFC 4291 allows :: at the start or end of an address with 7 other groups in addition
 
 								if ($groupCount > $max_groups)
-									$return_status = max($return_status, ISEMAIL_RFC5322_IPV6_MAXGRPS);
+									$return_status[]	= ISEMAIL_RFC5322_IPV6_MAXGRPS;
 								elseif ($groupCount === $max_groups)
-									$return_status = max($return_status, ISEMAIL_RFC5321_IPV6DEPRECATED);	// Eliding a single "::"
+									$return_status[]	= ISEMAIL_RFC5321_IPV6DEPRECATED;	// Eliding a single "::"
 							}
 						}
 
 						// Revision 2.7: Daniel Marschall's new IPv6 testing strategy
 						if ((substr($IPv6, 0,  1) === ISEMAIL_STRING_COLON) && (substr($IPv6, 1,  1) !== ISEMAIL_STRING_COLON))
-							$return_status = max($return_status, ISEMAIL_RFC5322_IPV6_COLONSTRT);	// Address starts with a single colon
+							$return_status[]	= ISEMAIL_RFC5322_IPV6_COLONSTRT;	// Address starts with a single colon
 						elseif ((substr($IPv6, -1) === ISEMAIL_STRING_COLON) && (substr($IPv6, -2, 1) !== ISEMAIL_STRING_COLON))
-							$return_status = max($return_status, ISEMAIL_RFC5322_IPV6_COLONEND);	// Address ends with a single colon
+							$return_status[]	= ISEMAIL_RFC5322_IPV6_COLONEND;	// Address ends with a single colon
 						elseif (count(preg_grep('/^[0-9A-Fa-f]{0,4}$/', $matchesIP, PREG_GREP_INVERT)) !== 0)
-							$return_status = max($return_status, ISEMAIL_RFC5322_IPV6_BADCHAR);	// Check for unmatched characters
+							$return_status[]	= ISEMAIL_RFC5322_IPV6_BADCHAR;	// Check for unmatched characters
 						else
-							$return_status = max($return_status, ISEMAIL_RFC5321_ADDRESSLITERAL);
+							$return_status[]	= ISEMAIL_RFC5321_ADDRESSLITERAL;
 					}
-				}
+				} else
+					$return_status[]	= ISEMAIL_RFC5322_DOMAINLITERAL;
 
-				$address_parts[ISEMAIL_COMPONENT_DOMAIN]			.= $token;
-				$address_atoms[ISEMAIL_COMPONENT_DOMAIN][$element_count]	.= $token;
+
+				$parsedata[ISEMAIL_COMPONENT_DOMAIN]			.= $token;
+				$atomlist[ISEMAIL_COMPONENT_DOMAIN][$element_count]	.= $token;
 				$element_len++;
 				$context_prior		= $context;
 				$context		= (int) array_pop($context_stack);
 				break;
 			case ISEMAIL_STRING_BACKSLASH:
-				$return_status		= max($return_status, ISEMAIL_DEPREC_DTEXT);
+				$return_status[]	= ISEMAIL_RFC5322_DOMLIT_OBSDTEXT;
 				$context_stack[]	= $context;
 				$context		= ISEMAIL_CONTEXT_QUOTEDPAIR;
 				break;
 			// Folding White Space
-			case ISEMAIL_STRING_CR:		if ((++$i === $rawLength) || ($email[$i] !== ISEMAIL_STRING_LF)) {$return_status = ISEMAIL_ERR_CR_NO_LF;	break;}	// Fatal error
+			case ISEMAIL_STRING_CR:		if ((++$i === $rawLength) || ($email[$i] !== ISEMAIL_STRING_LF)) {$return_status[]	= ISEMAIL_ERR_CR_NO_LF;	break;}	// Fatal error
 			case ISEMAIL_STRING_SP:
 			case ISEMAIL_STRING_HTAB:
-				$return_status		= max($return_status, ISEMAIL_CFWS_FWS);
+				$return_status[]	= ISEMAIL_CFWS_FWS;
 
 				$context_stack[]	= $context;
 				$context		= ISEMAIL_CONTEXT_FWS;
@@ -745,15 +753,15 @@
 
 				// CR, LF, SP & HTAB have already been parsed above
 				if (($ord > 127) || ($ord === 0) || ($token === ISEMAIL_STRING_OPENSQBRACKET)) {
-					$return_status = max($return_status, ISEMAIL_ERR_EXPECTING_DTEXT);	// Fatal error
+					$return_status[]	= ISEMAIL_ERR_EXPECTING_DTEXT;	// Fatal error
 					break;
 				} elseif (($ord < 33) || ($ord === 127)) {
-					$return_status = max($return_status, ISEMAIL_DEPREC_DTEXT);
+					$return_status[]	= ISEMAIL_RFC5322_DOMLIT_OBSDTEXT;
 				}
 
-				$address_parts[ISEMAIL_COMPONENT_LITERAL]			.= $token;
-				$address_parts[ISEMAIL_COMPONENT_DOMAIN]			.= $token;
-				$address_atoms[ISEMAIL_COMPONENT_DOMAIN][$element_count]	.= $token;
+				$parsedata[ISEMAIL_COMPONENT_LITERAL]			.= $token;
+				$parsedata[ISEMAIL_COMPONENT_DOMAIN]			.= $token;
+				$atomlist[ISEMAIL_COMPONENT_DOMAIN][$element_count]	.= $token;
 				$element_len++;
 			}
 
@@ -777,7 +785,7 @@
 			// Folding White Space
 			// Inside a quoted string, spaces are allowed as regular characters.
 			// It's only FWS if we include HTAB or CRLF
-			case ISEMAIL_STRING_CR:		if ((++$i === $rawLength) || ($email[$i] !== ISEMAIL_STRING_LF)) {$return_status = ISEMAIL_ERR_CR_NO_LF;	break;}	// Fatal error
+			case ISEMAIL_STRING_CR:		if ((++$i === $rawLength) || ($email[$i] !== ISEMAIL_STRING_LF)) {$return_status[]	= ISEMAIL_ERR_CR_NO_LF;	break;}	// Fatal error
 			case ISEMAIL_STRING_HTAB:
 				// http://tools.ietf.org/html/rfc5322#section-3.2.2
 				//   Runs of FWS, comment, or CFWS that occur between lexical tokens in a
@@ -787,19 +795,19 @@
 				// http://tools.ietf.org/html/rfc5322#section-3.2.4
 				//   the CRLF in any FWS/CFWS that appears within the quoted-string [is]
 				//   semantically "invisible" and therefore not part of the quoted-string
-				$address_parts[ISEMAIL_COMPONENT_LOCALPART]			.= ISEMAIL_STRING_SP;
-				$address_atoms[ISEMAIL_COMPONENT_LOCALPART][$element_count]	.= ISEMAIL_STRING_SP;
+				$parsedata[ISEMAIL_COMPONENT_LOCALPART]			.= ISEMAIL_STRING_SP;
+				$atomlist[ISEMAIL_COMPONENT_LOCALPART][$element_count]	.= ISEMAIL_STRING_SP;
 				$element_len++;
 
-				$return_status			= max($return_status, ISEMAIL_CFWS_FWS);
+				$return_status[]		= ISEMAIL_CFWS_FWS;
 				$context_stack[]		= $context;
 				$context			= ISEMAIL_CONTEXT_FWS;
 				$token_prior			= $token;
 				break;
 			// End of quoted string
 			case ISEMAIL_STRING_DQUOTE:
-				$address_parts[ISEMAIL_COMPONENT_LOCALPART]			.= $token;
-				$address_atoms[ISEMAIL_COMPONENT_LOCALPART][$element_count]	.= $token;
+				$parsedata[ISEMAIL_COMPONENT_LOCALPART]			.= $token;
+				$atomlist[ISEMAIL_COMPONENT_LOCALPART][$element_count]	.= $token;
 				$element_len++;
 				$context_prior			= $context;
 				$context			= (int) array_pop($context_stack);
@@ -822,12 +830,12 @@
 				$ord = ord($token);
 
 				if (($ord > 127) || ($ord === 0) || ($ord === 10)) {
-					$return_status = max($return_status, ISEMAIL_ERR_EXPECTING_QTEXT);	// Fatal error
+					$return_status[]	= ISEMAIL_ERR_EXPECTING_QTEXT;	// Fatal error
 				} elseif (($ord < 32) || ($ord === 127))
-					$return_status = max($return_status, ISEMAIL_DEPREC_QTEXT);
+					$return_status[]	= ISEMAIL_DEPREC_QTEXT;
 
-				$address_parts[ISEMAIL_COMPONENT_LOCALPART]			.= $token;
-				$address_atoms[ISEMAIL_COMPONENT_LOCALPART][$element_count]	.= $token;
+				$parsedata[ISEMAIL_COMPONENT_LOCALPART]			.= $token;
+				$atomlist[ISEMAIL_COMPONENT_LOCALPART][$element_count]	.= $token;
 				$element_len++;
 			}
 
@@ -861,9 +869,9 @@
 			$ord = ord($token);
 
 			if	($ord > 127)
-					$return_status = max($return_status, ISEMAIL_ERR_EXPECTING_QPAIR);	// Fatal error
+					$return_status[]	= ISEMAIL_ERR_EXPECTING_QPAIR;	// Fatal error
 			elseif	((($ord < 31) && ($ord !== 9)) || ($ord === 127))	// SP & HTAB are allowed
-					$return_status = max($return_status, ISEMAIL_DEPREC_QP);
+					$return_status[]	= ISEMAIL_DEPREC_QP;
 
 			// At this point we know where this qpair occurred so
 			// we could check to see if the character actually
@@ -880,13 +888,13 @@
 			case ISEMAIL_CONTEXT_COMMENT:
 				break;
 			case ISEMAIL_CONTEXT_QUOTEDSTRING:
-				$address_parts[ISEMAIL_COMPONENT_LOCALPART]			.= $token;
-				$address_atoms[ISEMAIL_COMPONENT_LOCALPART][$element_count]	.= $token;
+				$parsedata[ISEMAIL_COMPONENT_LOCALPART]			.= $token;
+				$atomlist[ISEMAIL_COMPONENT_LOCALPART][$element_count]	.= $token;
 				$element_len	+= 2;	// The maximum sizes specified by RFC 5321 are octet counts, so we must include the backslash
 				break;
 			case ISEMAIL_COMPONENT_LITERAL:
-				$address_parts[ISEMAIL_COMPONENT_DOMAIN]			.= $token;
-				$address_atoms[ISEMAIL_COMPONENT_DOMAIN][$element_count]	.= $token;
+				$parsedata[ISEMAIL_COMPONENT_DOMAIN]			.= $token;
+				$atomlist[ISEMAIL_COMPONENT_DOMAIN][$element_count]	.= $token;
 				$element_len	+= 2;	// The maximum sizes specified by RFC 5321 are octet counts, so we must include the backslash
 				break;
 			default:
@@ -924,8 +932,8 @@
 				// any addr-spec that had CFWS outside a quoted string being invalid
 				// for RFC 5321.
 //				if (($context === ISEMAIL_COMPONENT_LOCALPART) || ($context === ISEMAIL_COMPONENT_DOMAIN)) {
-//					$address_parts[$context]			.= ISEMAIL_STRING_SP;
-//					$address_atoms[$context][$element_count]	.= ISEMAIL_STRING_SP;
+//					$parsedata[$context]			.= ISEMAIL_STRING_SP;
+//					$atomlist[$context][$element_count]	.= ISEMAIL_STRING_SP;
 //					$element_len++;
 //				}
 
@@ -936,10 +944,10 @@
 				$context		= ISEMAIL_CONTEXT_QUOTEDPAIR;
 				break;
 			// Folding White Space
-			case ISEMAIL_STRING_CR:		if ((++$i === $rawLength) || ($email[$i] !== ISEMAIL_STRING_LF)) {$return_status = ISEMAIL_ERR_CR_NO_LF;	break;}	// Fatal error
+			case ISEMAIL_STRING_CR:		if ((++$i === $rawLength) || ($email[$i] !== ISEMAIL_STRING_LF)) {$return_status[]	= ISEMAIL_ERR_CR_NO_LF;	break;}	// Fatal error
 			case ISEMAIL_STRING_SP:
 			case ISEMAIL_STRING_HTAB:
-				$return_status		= max($return_status, ISEMAIL_CFWS_FWS);
+				$return_status[]	= ISEMAIL_CFWS_FWS;
 
 				$context_stack[]	= $context;
 				$context		= ISEMAIL_CONTEXT_FWS;
@@ -963,10 +971,10 @@
 				$ord = ord($token);
 
 				if (($ord > 127) || ($ord === 0) || ($ord === 10)) {
-					$return_status = max($return_status, ISEMAIL_ERR_EXPECTING_CTEXT);	// Fatal error
+					$return_status[]	= ISEMAIL_ERR_EXPECTING_CTEXT;	// Fatal error
 					break;
 				} elseif (($ord < 32) || ($ord === 127)) {
-					$return_status = max($return_status, ISEMAIL_DEPREC_CTEXT);
+					$return_status[]	= ISEMAIL_DEPREC_CTEXT;
 				}
 			}
 
@@ -990,20 +998,20 @@
 			//   obs-FWS         =   1*([CRLF] WSP)
 			if ($token_prior === ISEMAIL_STRING_CR) {
 				if ($token === ISEMAIL_STRING_CR) {
-					$return_status = max($return_status, ISEMAIL_ERR_FWS_CRLF_X2);	// Fatal error
+					$return_status[]	= ISEMAIL_ERR_FWS_CRLF_X2;	// Fatal error
 					break;
 				}
 
 				if (isset($crlf_count)) {
 					if (++$crlf_count > 1)
-						$return_status = max($return_status, ISEMAIL_DEPREC_FWS);	// Multiple folds = obsolete FWS
+						$return_status[]	= ISEMAIL_DEPREC_FWS;	// Multiple folds = obsolete FWS
 				} else $crlf_count = 1;
 			}
 
 			switch ($token) {
 			case ISEMAIL_STRING_CR:
 				if ((++$i === $rawLength) || ($email[$i] !== ISEMAIL_STRING_LF))
-					$return_status = max($return_status, ISEMAIL_ERR_CR_NO_LF);	// Fatal error
+					$return_status[]	= ISEMAIL_ERR_CR_NO_LF;	// Fatal error
 
 				break;
 			case ISEMAIL_STRING_SP:
@@ -1011,7 +1019,7 @@
 				break;
 			default:
 				if ($token_prior === ISEMAIL_STRING_CR) {
-					$return_status = max($return_status, ISEMAIL_ERR_FWS_CRLF_END);	// Fatal error
+					$return_status[]	= ISEMAIL_ERR_FWS_CRLF_END;	// Fatal error
 					break;
 				}
 
@@ -1030,8 +1038,8 @@
 				// any addr-spec that had CFWS outside a quoted string being invalid
 				// for RFC 5321.
 //				if (($context === ISEMAIL_COMPONENT_LOCALPART) || ($context === ISEMAIL_COMPONENT_DOMAIN)) {
-//					$address_parts[$context]			.= ISEMAIL_STRING_SP;
-//					$address_atoms[$context][$element_count]	.= ISEMAIL_STRING_SP;
+//					$parsedata[$context]			.= ISEMAIL_STRING_SP;
+//					$atomlist[$context][$element_count]	.= ISEMAIL_STRING_SP;
 //					$element_len++;
 //				}
 
@@ -1047,25 +1055,25 @@
 			die("Unknown context: $context");
 		}
 
-//-echo "<td>$context|",(($end_or_die) ? 'true' : 'false'),"|$token|$return_status</td></tr>"; // debug
-		if ($return_status > ISEMAIL_RFC5322) break;	// No point going on if we've got a fatal error
+//-echo "<td>$context|",(($end_or_die) ? 'true' : 'false'),"|$token|" . max($return_status) . "</td></tr>"; // debug
+		if (max($return_status) > ISEMAIL_RFC5322) break;	// No point going on if we've got a fatal error
 	}
 
 	// Some simple final tests
-	if ($return_status < ISEMAIL_RFC5322) {
-		if	($context 	=== ISEMAIL_CONTEXT_QUOTEDSTRING)	$return_status = max($return_status, ISEMAIL_ERR_UNCLOSEDQUOTEDSTR);	// Fatal error
-		elseif	($context 	=== ISEMAIL_CONTEXT_QUOTEDPAIR)		$return_status = max($return_status, ISEMAIL_ERR_BACKSLASHEND);		// Fatal error
-		elseif	($context 	=== ISEMAIL_CONTEXT_COMMENT)		$return_status = max($return_status, ISEMAIL_ERR_UNCLOSEDCOMMENT);	// Fatal error
-		elseif	($context 	=== ISEMAIL_COMPONENT_LITERAL)		$return_status = max($return_status, ISEMAIL_ERR_UNCLOSEDDOMLIT);	// Fatal error
-		elseif	($token		=== ISEMAIL_STRING_CR)			$return_status = max($return_status, ISEMAIL_ERR_FWS_CRLF_END);		// Fatal error
-	//-	elseif	($address_parts[ISEMAIL_COMPONENT_LOCALPART]	=== '')	$return_status = max($return_status, ISEMAIL_ERR_NOLOCALPART);		// Fatal error
-		elseif	($address_parts[ISEMAIL_COMPONENT_DOMAIN]	=== '')	$return_status = max($return_status, ISEMAIL_ERR_NODOMAIN);		// Fatal error
-		elseif	($element_len	=== 0)					$return_status = max($return_status, ISEMAIL_ERR_DOT_END);		// Fatal error
-		elseif	($hyphen_flag)						$return_status = max($return_status, ISEMAIL_ERR_DOMAINHYPHENEND);	// Fatal error
+	if (max($return_status) < ISEMAIL_RFC5322) {
+		if	($context 	=== ISEMAIL_CONTEXT_QUOTEDSTRING)	$return_status[]	= ISEMAIL_ERR_UNCLOSEDQUOTEDSTR;	// Fatal error
+		elseif	($context 	=== ISEMAIL_CONTEXT_QUOTEDPAIR)		$return_status[]	= ISEMAIL_ERR_BACKSLASHEND;		// Fatal error
+		elseif	($context 	=== ISEMAIL_CONTEXT_COMMENT)		$return_status[]	= ISEMAIL_ERR_UNCLOSEDCOMMENT;		// Fatal error
+		elseif	($context 	=== ISEMAIL_COMPONENT_LITERAL)		$return_status[]	= ISEMAIL_ERR_UNCLOSEDDOMLIT;		// Fatal error
+		elseif	($token		=== ISEMAIL_STRING_CR)			$return_status[]	= ISEMAIL_ERR_FWS_CRLF_END;		// Fatal error
+	//-	elseif	($parsedata[ISEMAIL_COMPONENT_LOCALPART]	=== '')	$return_status[]	= ISEMAIL_ERR_NOLOCALPART;		// Fatal error
+		elseif	($parsedata[ISEMAIL_COMPONENT_DOMAIN]	=== '')	$return_status[]	= ISEMAIL_ERR_NODOMAIN;			// Fatal error
+		elseif	($element_len	=== 0)					$return_status[]	= ISEMAIL_ERR_DOT_END;			// Fatal error
+		elseif	($hyphen_flag)						$return_status[]	= ISEMAIL_ERR_DOMAINHYPHENEND;		// Fatal error
 		// http://tools.ietf.org/html/rfc5321#section-4.5.3.1.2
 		//   The maximum total length of a domain name or number is 255 octets.
-		elseif	(strlen($address_parts[ISEMAIL_COMPONENT_DOMAIN]) > 255)
-										$return_status = max($return_status, ISEMAIL_RFC5322_DOMAIN_TOOLONG);
+		elseif	(strlen($parsedata[ISEMAIL_COMPONENT_DOMAIN]) > 255)
+										$return_status[]	= ISEMAIL_RFC5322_DOMAIN_TOOLONG;
 		// http://tools.ietf.org/html/rfc5321#section-4.1.2
 		//   Forward-path   = Path
 		//
@@ -1084,17 +1092,17 @@
 		//   address in MAIL and RCPT commands of 254 characters.  Since addresses
 		//   that do not fit in those fields are not normally useful, the upper
 		//   limit on address lengths should normally be considered to be 254.
-		elseif	(strlen($address_parts[ISEMAIL_COMPONENT_LOCALPART] . ISEMAIL_STRING_AT . $address_parts[ISEMAIL_COMPONENT_DOMAIN]) > 254)
-										$return_status = max($return_status, ISEMAIL_RFC5322_TOOLONG);
+		elseif	(strlen($parsedata[ISEMAIL_COMPONENT_LOCALPART] . ISEMAIL_STRING_AT . $parsedata[ISEMAIL_COMPONENT_DOMAIN]) > 254)
+										$return_status[]	= ISEMAIL_RFC5322_TOOLONG;
 		// http://tools.ietf.org/html/rfc1035#section-2.3.4
 		// labels          63 octets or less
-		elseif ($element_len > 63)					$return_status = max($return_status, ISEMAIL_RFC5322_LABEL_TOOLONG);
+		elseif ($element_len > 63)					$return_status[]	= ISEMAIL_RFC5322_LABEL_TOOLONG;
 	}
 
 	// Check DNS?
 	$dns_checked = false;
 
-	if ($checkDNS && ($return_status < ISEMAIL_DNSWARN) && function_exists('dns_get_record')) {
+	if ($checkDNS && (max($return_status) < ISEMAIL_DNSWARN) && function_exists('dns_get_record')) {
 		// http://tools.ietf.org/html/rfc5321#section-2.3.5
 		//   Names that can
 		//   be resolved to MX RRs or address (i.e., A or AAAA) RRs (as discussed
@@ -1112,19 +1120,19 @@
 		// sufficient evidence of the domain's existence. For performance reasons
 		// we will not repeat the DNS lookup for the CNAME's target, but we will
 		// raise a warning because we didn't immediately find an MX record.
-		if ($element_count === 0) $address_parts[ISEMAIL_COMPONENT_DOMAIN] .= '.';	// Checking TLD DNS seems to work only if you explicitly check from the root
+		if ($element_count === 0) $parsedata[ISEMAIL_COMPONENT_DOMAIN] .= '.';		// Checking TLD DNS seems to work only if you explicitly check from the root
 
-		$result = @dns_get_record($address_parts[ISEMAIL_COMPONENT_DOMAIN], DNS_MX);	// Not using checkdnsrr because of a suspected bug in PHP 5.3 (http://bugs.php.net/bug.php?id=51844)
+		$result = @dns_get_record($parsedata[ISEMAIL_COMPONENT_DOMAIN], DNS_MX);	// Not using checkdnsrr because of a suspected bug in PHP 5.3 (http://bugs.php.net/bug.php?id=51844)
 
 		if ((is_bool($result) && !(bool) $result))
-			$return_status = max($return_status, ISEMAIL_DNSWARN_DOMAINNOTFOUND);			// Domain can't be found in DNS
+			$return_status[] = ISEMAIL_DNSWARN_DOMAINNOTFOUND;			// Domain can't be found in DNS
 		else {
 			if (count($result) === 0) {
-				$return_status	= max($return_status, ISEMAIL_DNSWARN_NO_MX_RECORD);		// MX-record for domain can't be found
-				$result		= @dns_get_record($address_parts[ISEMAIL_COMPONENT_DOMAIN], DNS_A + DNS_CNAME);
+				$return_status[]	= ISEMAIL_DNSWARN_NO_MX_RECORD;		// MX-record for domain can't be found
+				$result			= @dns_get_record($parsedata[ISEMAIL_COMPONENT_DOMAIN], DNS_A + DNS_CNAME);
 
 				if (count($result) === 0)
-					$return_status	= max($return_status, ISEMAIL_DNSWARN_NO_RECORD);	// No usable records for the domain can be found
+					$return_status[] = ISEMAIL_DNSWARN_NO_RECORD;		// No usable records for the domain can be found
 			} else $dns_checked = true;
 		}
 	}
@@ -1161,14 +1169,20 @@
 	//   However, a valid host name can never have the dotted-decimal
 	//   form #.#.#.#, since this change does not permit the highest-level
 	//   component label to start with a digit even if it is not all-numeric.
-	if (!$dns_checked && ($return_status < ISEMAIL_DNSWARN)) {
-		if	($element_count	=== 0)	$return_status = max($return_status, ISEMAIL_RFC5321_TLD);
-		elseif	(is_numeric($address_atoms[ISEMAIL_COMPONENT_DOMAIN][$element_count][0]))
-						$return_status = max($return_status, ISEMAIL_RFC5321_TLDNUMERIC);
+	if (!$dns_checked && (max($return_status) < ISEMAIL_DNSWARN)) {
+		if	($element_count	=== 0)	$return_status[]	= ISEMAIL_RFC5321_TLD;
+		elseif	(is_numeric($atomlist[ISEMAIL_COMPONENT_DOMAIN][$element_count][0]))
+						$return_status[]	= ISEMAIL_RFC5321_TLDNUMERIC;
 	}
 
 // To do
 // 4. return value depending on $diagnose & $warn
-	return $return_status;
+	$return_status		= array_unique($return_status);
+	$final_status		= max($return_status);
+
+	if (count($return_status) !== 1) array_shift($return_status); // remove redundant ISEMAIL_VALID
+
+	$parsedata['status']	= $return_status;
+	return $final_status;
 }
 ?>

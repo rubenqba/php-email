@@ -10,15 +10,14 @@
 <body>
 	<h2 id="top">RFC-compliant email address validation</h2>
 <?php
-// Incorporates formatting suggestions from Daniel Marschall (uni@danielmarschall.de)
+// Incorporates formatting suggestions from Daniel Marschall
 require_once '../is_email.php';
-require_once '../extras/is_email_statustext.php';
-is_email(''); // Ensure constants are defined
+require_once './meta.php';
 
 /*.string.*/ function innerHTML($node, $document) {
 	if ($node->childNodes->length > 1) {
 		$html = '';
-		foreach ($node->childNodes as $childNode) $html .= $document->saveXML($childNode);	// May need LIBXML_NOEMPTYTAG if you're worried about <script/>
+		foreach ($node->childNodes as $childNode) $html .= $document->saveXML($childNode); // May need LIBXML_NOEMPTYTAG
 	} else {
 		$html = $node->nodeValue;
 	}
@@ -26,28 +25,52 @@ is_email(''); // Ensure constants are defined
 	return $html;
 }
 
-/*.array[string]mixed.*/ function unitTest ($email, $expected_category = -1, $expected_diagnosis = -1) {
-	$result					= /*.(array[string]mixed).*/ array();
-	$address_parts				= /*.(array[string]string).*/ array();
-	$diagnosis				= is_email($email, true, ISEMAIL_DIAGNOSE, $address_parts);
-	$category				= ($diagnosis === 0) ? 0 : (int) pow(2, ceil(log($diagnosis + 1, 2))) - 1;	// Calculate category from diagnosis: is there a better way to do this?
+/*string.*/ function alternate_diagnoses(/*.array[int]int.*/ $diagnoses, /*.int.*/ $diagnosis) {
+		// Other diagnoses
+		$alternates	= '';
+		$separator	= '';
 
-	$result[ISEMAIL_COMPONENT_LOCALPART]	= $address_parts[ISEMAIL_COMPONENT_LOCALPART];
-	$result[ISEMAIL_COMPONENT_DOMAIN]	= $address_parts[ISEMAIL_COMPONENT_DOMAIN];
-	$result['category']			= $category;
-	$result['diagnosis']			= $diagnosis;
-	$result['expected_category']		= $expected_category;
-	$result['expected_diagnosis']		= $expected_diagnosis;
-	$result['constant_category']		= is_email_statustext($category,			ISEMAIL_STATUSTEXT_CONSTANT);
-	$result['constant_diagnosis']		= is_email_statustext($diagnosis,			ISEMAIL_STATUSTEXT_CONSTANT);
-	$result['constant_expected_category']	= is_email_statustext($expected_category,		ISEMAIL_STATUSTEXT_CONSTANT);
-	$result['constant_expected_diagnosis']	= is_email_statustext($expected_diagnosis,	ISEMAIL_STATUSTEXT_CONSTANT);
-	$result['text_category']		= is_email_statustext($category,			ISEMAIL_STATUSTEXT_EXPLANATORY);
-	$result['text_diagnosis']		= is_email_statustext($diagnosis,			ISEMAIL_STATUSTEXT_EXPLANATORY);
-	$result['smtpcode']			= is_email_statustext($diagnosis,			ISEMAIL_STATUSTEXT_SMTPCODE);
+		foreach ($diagnoses as $alternate) {
+			if ($alternate !== $diagnosis) {
+				$alternates	.= $separator . is_email_analysis($alternate, ISEMAIL_META_CONSTANT);
+				$separator	= ', ';
+			}
+		}
 
-	$result['alert_category']		= ($expected_category	=== -1) ? false : ($category	!== $expected_category);
-	$result['alert_diagnosis']		= ($expected_diagnosis	=== -1) ? false : ($diagnosis	!== $expected_diagnosis);
+		return ($alternates !== '') ? "Other diagnoses: $alternates" : '';
+}
+
+/*.array[string]mixed.*/ function unitTest ($email, $expected_category_test = '', $expected_diagnosis = '') {
+	$result			= /*.(array[string]mixed).*/ array('actual' => array());
+	$parsedata		= /*.(array[string]string).*/ array();
+
+	$diagnosis_value		= is_email($email, true, ISEMAIL_DIAGNOSE, $parsedata);
+
+	$result['actual']['diagnosis']	= $diagnosis_value;
+	$result['actual']['parsedata']	= $parsedata;
+	$result['actual']['analysis']	= is_email_analysis($diagnosis_value, ISEMAIL_META_ALL);
+
+	if ($expected_diagnosis === '') {
+		$result['actual']['alert_category']	= false;
+		$result['actual']['alert_diagnosis']	= false;
+	} else {
+		$result['expected']			= array();
+		$result['expected']['diagnosis']	= $expected_diagnosis;
+		$result['expected']['analysis']		= is_email_analysis($expected_diagnosis, ISEMAIL_META_ALL);
+
+		$category				= $result['actual']['analysis'][ISEMAIL_META_CATEGORY];
+		$expected_category			= $result['expected']['analysis'][ISEMAIL_META_CATEGORY];
+		$diagnosis				= $result['actual']['analysis'][ISEMAIL_META_CONSTANT];
+
+		$result['actual']['alert_category']	= ($category	!== $expected_category);
+		$result['actual']['alert_diagnosis']	= ($diagnosis	!== $expected_diagnosis);
+	}
+
+	// Sanity check expected category
+	// (this is necessary because we decided to keep both category
+	// and diagnosis in the test data)
+	if (($expected_category_test !== '') && ($expected_category_test !== $expected_category))
+		die("The expected category $expected_category_test from the test data for '$email' does not match the true expected category $expected_category");
 
 	return $result;
 }
@@ -55,12 +78,13 @@ is_email(''); // Ensure constants are defined
 /*.string.*/ function all_tests($test_set = 'tests.xml') {
 	$document = new DOMDocument();
 	$document->load($test_set);
+	$document->schemaValidate('./tests.xsd');
 
 	// Get version
 	$suite		= $document->getElementsByTagName('tests')->item(0);
 	$version	= ($suite->hasAttribute('version')) ? $suite->getAttribute('version') : '';
 	$nodeList	= $document->getElementsByTagName('description');
-	$description	= ($nodeList->length === 0) ? '' : "\t" . '<p class="rubric">' . innerHTML($nodeList->item(0), $document) . '</p>';
+	$description	= ($nodeList->length === 0) ? '' : "\t" . '<div class="rubric">' . innerHTML($nodeList->item(0), $document) . '</div>';
 
 	echo <<<PHP
 	<h3>Test package version $version</h3>
@@ -70,6 +94,7 @@ PHP;
 
 	$testList			= $document->getElementsByTagName('test');
 	$testCount			= $testList->length;
+	$coverage_actual		= array();	// List of diagnoses returned by the test set
 	$statistics_count		= 0;
 	$statistics_alert_category	= 0;
 	$statistics_alert_diagnosis	= 0;
@@ -78,14 +103,25 @@ PHP;
 	// Can't store ASCII or Unicode characters below U+0020 in XML file so we put a token in the XML
 	// (except for HTAB, CR & LF)
 	// The tokens we have chosen are the Unicode Characters 'SYMBOL FOR xxx' (U+2400 onwards)
-	// Here we convert the token to the actual character.
-	$needles		= array();
-	$substitutes		= array();
+	// Here we convert the symbol to the actual character.
+	$span_start		= '<span class="controlcharacter">';
+	$span_end		= '</span>';
+
+	$needles		= array(' ', mb_convert_encoding('&#9229;&#9226;', 'UTF-8', 'HTML-ENTITIES'));
+	$substitutes		= array(' ', chr(13).chr(10));
+	$substitutes_html	= array("$span_start&#x2420;$span_end", "$span_start&#x240D;&#x240A;$span_end<br/>");
 
 	for ($i = 0; $i < 32; $i++) {
-		$needles[]	= mb_convert_encoding('&#' . (string) (9216 + $i) . ';', 'UTF-8', 'HTML-ENTITIES');	// PHP bug doesn't allow us to use hex notation (http://bugs.php.net/48645)
-		$substitutes[]	= chr($i);
+		$entity			= mb_convert_encoding('&#' . (string) (9216 + $i) . ';', 'UTF-8', 'HTML-ENTITIES');	// PHP bug doesn't allow us to use hex notation (http://bugs.php.net/48645)
+		$entity_html		= '&#x24' . substr('0'.dechex($i), -2) . ';';
+		$needles[]		= $entity;
+		$substitutes[]		= chr($i);
+		$substitutes_html[]	= "$span_start$entity_html$span_end";
 	}
+
+	// Additional output modifications
+	$substitutes_html[12]		.= '<br/>';	// Add a visible line break to LF
+	$substitutes_html[15]		.= '<br/>';	// Add a visible line break to CR
 
 	for ($i = 0; $i < $testCount; $i++) {
 		$test_node	= $testList->item($i);
@@ -93,10 +129,9 @@ PHP;
 		$tagList	= $test_node->childNodes;
 
 		$address	= '';
-		$category	= -1;
-		$diagnosis	= -1;
+		$category	= '';
+		$diagnosis	= '';
 		$comment	= '';
-		unset($warning);
 
 		for ($j = 0; $j < $tagList->length; $j++) {
 			$node = $tagList->item($j);
@@ -107,50 +142,52 @@ PHP;
 			}
 		}
 
-		$category		= (int) $category;
-		$diagnosis		= (int) $diagnosis;
 		$email			= str_replace($needles, $substitutes, $address);
+		$address_html		= str_replace($needles, $substitutes_html, $address);
 		$comment		= str_replace($needles, $substitutes, $comment);
 
 		$result			= unitTest($email, $category, $diagnosis);	// This is why we're here
 
-		$category_result	= $result['category'];
-		$diagnosis_result	= $result['diagnosis'];
-		$constant_category	= $result['constant_category'];
-		$constant_diagnosis	= $result['constant_diagnosis'];
-		$text			= $result['text_diagnosis'];
+		$category_result	= $result['actual']['analysis'][ISEMAIL_META_CAT_VALUE];
+		$diagnosis_result	= $result['actual']['diagnosis'];
+		$constant_category	= $result['actual']['analysis'][ISEMAIL_META_CATEGORY];
+		$constant_diagnosis	= $result['actual']['analysis'][ISEMAIL_META_CONSTANT];
+		$text			= $result['actual']['analysis'][ISEMAIL_META_DESC];
 
 		$comments		= /*.(array[int]string).*/ array();
 
 		if (strlen($comment) !== 0)	$comments[] = '<em>' . stripslashes($comment) . '</em>';
 		if ($text !== '')		$comments[] = stripslashes($text);
 
-		if ($result['alert_category']) {
+		if ($result['actual']['alert_category']) {
 			$class_category	= ' unexpected';
 			$rag_category	= ' red';
-			$comments[]	= 'Expected category was ' . $result['constant_expected_category'];
+			$comments[]	= 'Expected category was ' . $result['expected']['analysis'][ISEMAIL_META_CATEGORY];
 		} else {
 			$class_category	= '';
 			$rag_category	= '';
 		}
 
-		if ($result['alert_diagnosis']) {
+		if ($result['actual']['alert_diagnosis']) {
 			$class_diagnosis= ' unexpected';
 			$rag_diagnosis	= ' amber';
-			$comments[]	= 'Expected diagnosis was ' . $result['constant_expected_diagnosis'];
+			$comments[]	= 'Expected diagnosis was ' . $result['expected']['analysis'][ISEMAIL_META_CONSTANT];
 		} else {
 			$class_diagnosis= '';
 			$rag_diagnosis	= '';
 		}
 
+		// Other diagnoses
+		$alternates = alternate_diagnoses($result['actual']['parsedata']['status'], $diagnosis_result);
+		if ($alternates !== '') $comments[] = $alternates;
+
 		$comments_html	= implode('<br/>', $comments);
-		$address_length	= (strlen($address) > 41) ? 'long' : 'short';
-		$address_html	= str_replace(array(chr(9), chr(13).chr(10), chr(10), chr(13)), array('&#x2409;&#x2003;', '&#x240D;&#x240A;<br/>', '&#x240A;<br/>', '&#x240D;<br/>'), htmlspecialchars($address));
-		if ($email === '') $email = "&nbsp;";
+		$address_length = strlen($address);
+		$address_class	= ($address_length > 39) ? 'long' : (($address_length < 29) ? 'short' : 'medium');
 
 		$html .= <<<HTML
 			<tr id="$id">
-				<td><p class="address $address_length">$address_html</p></td>
+				<td><p class="address $address_class">$address_html</p></td>
 				<td><div class="infoblock">
 					<div class="label">Test #</div>		<div class="id">$id</div><br/>
 					<div class="label">Category</div>	<div class="category$class_category$rag_category">$constant_category</div><br/>
@@ -162,9 +199,11 @@ PHP;
 HTML;
 
 		// Update statistics for this test
+		$coverage_actual[]		= $diagnosis_result;
+
 		$statistics_count++;
-		$statistics_alert_category	+= ($result['alert_category'])	? 1 : 0;
-		$statistics_alert_diagnosis	+= ($result['alert_diagnosis'])	? 1 : 0;
+		$statistics_alert_category	+= ($result['actual']['alert_category'])	? 1 : 0;
+		$statistics_alert_diagnosis	+= ($result['actual']['alert_diagnosis'])	? 1 : 0;
 	}
 
 	// Revision 2.7: Added test run statistics
@@ -176,7 +215,26 @@ HTML;
 	$statistics_plural_category	= ($statistics_alert_category	=== 1)	? 'y' : 'ies';
 	$statistics_plural_diagnosis	= ($statistics_alert_diagnosis	=== 1)	? 'is' : 'es';
 
+	// Coverage
+	$coverage_actual	= array_unique($coverage_actual, SORT_NUMERIC);
+	$coverage_theory	= is_email_list(ISEMAIL_META_VALUE);
+	$coverage_count_actual	= count($coverage_actual);
+	$coverage_count_theory	= count($coverage_theory);
+	$coverage_percent	= sprintf('%d', 100 * $coverage_count_actual / $coverage_count_theory);
+	$coverage_diff		= array_diff($coverage_theory, $coverage_actual);
+	$coverage_missing	= '';
+	$separator		= '';
+
+	foreach($coverage_diff as $value) {
+		$constant		= is_email_analysis((int) $value, ISEMAIL_META_CONSTANT);
+		$coverage_missing	.= $separator . $constant;
+		$separator		= ', ';
+	}
+
+	if ($coverage_missing !== '') $coverage_missing = " Missing outcomes: $coverage_missing";
+
 	echo <<<PHP
+	<p class="rubric">Coverage: $coverage_percent% ($coverage_count_actual outcomes recorded / $coverage_count_theory defined).$coverage_missing</p>
 	<p class="statistics $statistics_class">$statistics_count test$statistics_plural_count: $statistics_alert_category unexpected categor$statistics_plural_category, $statistics_alert_diagnosis unexpected diagnos$statistics_plural_diagnosis</p>
 	<table>
 		<thead>
@@ -196,21 +254,24 @@ PHP;
 /*.string.*/ function test_single_address(/*.string.*/ $email) {
 	$result			= unitTest($email);
 
-	$category		= $result['category'];
-	$diagnosis		= $result['diagnosis'];
-	$constant_category	= $result['constant_category'];
-	$constant_diagnosis	= $result['constant_diagnosis'];
-	$text_category		= $result['text_category'];
-	$text_diagnosis		= $result['text_diagnosis'];
-	$smtpcode		= $result['smtpcode'];
+	$constant_category	= $result['actual']['analysis'][ISEMAIL_META_CATEGORY];
+	$constant_diagnosis	= $result['actual']['analysis'][ISEMAIL_META_CONSTANT];
+	$text_category		= $result['actual']['analysis'][ISEMAIL_META_CAT_DESC];
+	$text_diagnosis		= $result['actual']['analysis'][ISEMAIL_META_DESC];
+	$smtpcode		= $result['actual']['analysis'][ISEMAIL_META_SMTP];
+	$reference		= (array_key_exists(ISEMAIL_META_REF_ALT, $result['actual']['analysis'])) ? "\t\t<p>The following reference is relevant:</p>\r\n" . $result['actual']['analysis'][ISEMAIL_META_REF_ALT] : '';
+
+	// Other diagnoses
+	$alternates = alternate_diagnoses($result['actual']['parsedata']['status'], $result['actual']['diagnosis']);
+	if ($alternates !== '') $alternates = "<p>$alternates</p>";
 
 	echo <<<HTML
 	<div class="results">
 		<p>Email address tested was <em>$email</em></p>
-		<p>Category: $text_category</p>
-		<p>Diagnosis: $text_diagnosis</p>
-		<p>The SMTP enhanced status code is <em>$smtpcode</em></p>
-	</div>
+		<p>Category: [$constant_category] $text_category</p>
+		<p>Diagnosis: [$constant_diagnosis] $text_diagnosis</p>
+$alternates		<p>The SMTP enhanced status code would be <em>$smtpcode</em></p>
+$reference	</div>
 
 HTML;
 }
@@ -223,10 +284,10 @@ HTML;
 		<input type="submit" value="Test this" class="menu"/>
 		<input type="text"$value name="address" class="text"/>
 	</form>
-	<a href="?all" >Run all tests</a>
-	<a href="?set=tests-beta.xml" >Run beta test set</a>	<!-- Revision 2.11: evaluating Michael Rushton's new test set -->
-	<a href="http://www.dominicsayers.com/isemail" target="_blank">Read more...</a>
-	<a href="mailto:dominic@sayers.cc?subject=is_email()">Contact</a>
+	<a class="menu" href="?all" >Run all tests</a>
+	<a class="menu" href="?set=tests-original.xml" >Run original test set</a>
+	<a class="menu" href="http://www.dominicsayers.com/isemail" target="_blank">Read more...</a>
+	<a class="menu" href="mailto:dominic@sayers.cc?subject=is_email()">Contact</a>
 	<br/>
 
 PHP;

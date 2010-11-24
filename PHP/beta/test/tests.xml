@@ -1,6 +1,23 @@
 <?xml version="1.0"?>
-<!DOCTYPE tests>
 <!--
+Notes
+.....
+ 1. To test email addresses that include ASCII control characters (ASCII
+    positions < 32), put a Unicode entity in this data. This is because XML
+    doesn't like storing &#x00;. The Unicode entity you should use
+    is &#x2400; + the ASCII position. E.g to test a BEL character (ASCII
+    position 7), put a &#x2407; in this data. This also enables the control
+    characters to be made visible in your output because the Unicode characters
+    &#x2400; onwards are 'SYMBOL FOR xxx'. In other words &#x2407; will look
+    like BEL in your output.
+
+ 2. Certain outcomes are impossible to test since they imply another, higher
+    order, outcome also. These are:
+
+    ISEMAIL_RFC5322_DOMLIT_OBSDTEXT
+    This implies that the domain literal cannot be a valid RFC 5321 address
+    literal. This issue outranks the fact that the token is also obs-dtext.
+
 If you update these tests, don't forget to change the actual version number
 attribute in the <tests> element below!
 
@@ -9,2701 +26,1196 @@ Date       Tests        Version Notes
 2010-10-18 #1-#279      3.0	New schema designed to enhance fault
 				identification.
 -->
-<tests xmlns="http://www.w3.org/2001/XMLSchema-instance" version="3.0" SchemaLocation="tests.xsd">
+<tests version="3.0">
+	<description>
+		<p><strong>New test set</strong></p>
+		<p>This test set is designed to replace and extend the coverage of the original set but with fewer tests.</p>
+		<p>Thanks to Michael Rushton (michael@squiloople.com) for starting this work and contributing tests 1-100</p>
+	</description>
 	<test id="1">
-		<address>first.last@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address/>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_NODOMAIN</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="2">
-		<address>1234567890123456789012345678901234567890123456789012345678901234@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>test</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_NODOMAIN</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="3">
-		<address>first.last@sub.do,com</address>
-		<comment>Mistyped comma instead of dot (replaces old #3 which was the same as #57)</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Rob &lt;bob@bob.com&gt;</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>@</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_NOLOCALPART</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="4">
-		<address>"first\"last"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_NODOMAIN</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="5">
-		<address>first\@last@iana.org</address>
-		<comment>Escaping can only happen within a quoted string</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@io</address>
+		<comment>io. currently has an MX-record (Nov 2010). Some DNS setups seem to find it, some don't. If you don't see the MX for io. then try setting your DNS server to 8.8.8.8 (the Google DNS server)</comment>
+		<category>ISEMAIL_VALID_CATEGORY</category>
+		<diagnosis>ISEMAIL_VALID</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="6">
-		<address>"first@last"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>@io</address>
+		<comment>io. currently has an MX-record (Nov 2010)</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_NOLOCALPART</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="7">
-		<address>"first\\last"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_NOLOCALPART</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="8">
-		<address>x@x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x2</address>
-		<comment>Total length reduced to 254 characters so it's still valid</comment>
-		<category>7</category>
-		<diagnosis>6</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@iana.org</address>
+		<category>ISEMAIL_VALID_CATEGORY</category>
+		<diagnosis>ISEMAIL_VALID</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="9">
-		<address>1234567890123456789012345678901234567890123456789012345678901@12345678901234567890123456789012345678901234567890123456789.12345678901234567890123456789012345678901234567890123456789.123456789012345678901234567890123456789012345678901234567890123.iana.org</address>
-		<comment>Total length reduced to 254 characters so it's still valid</comment>
-		<category>7</category>
-		<diagnosis>6</diagnosis>
-		<source>RFC 3696 erratum 1690</source>
-		<sourcelink>http://www.rfc-editor.org/errata_search.php?rfc=3696&amp;eid=1690</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@nominet.org.uk</address>
+		<category>ISEMAIL_VALID_CATEGORY</category>
+		<diagnosis>ISEMAIL_VALID</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="10">
-		<address>first.last@[12.34.56.78]</address>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>RFC 3696 erratum 1690</source>
-		<sourcelink>http://www.rfc-editor.org/errata_search.php?rfc=3696&amp;eid=1690</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@about.museum</address>
+		<category>ISEMAIL_VALID_CATEGORY</category>
+		<diagnosis>ISEMAIL_VALID</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="11">
-		<address>first.last@[IPv6:::12.34.56.78]</address>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>a@iana.org</address>
+		<category>ISEMAIL_VALID_CATEGORY</category>
+		<diagnosis>ISEMAIL_VALID</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="12">
-		<address>first.last@[IPv6:1111:2222:3333::4444:12.34.56.78]</address>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@e.com</address>
+		<category>ISEMAIL_DNSWARN</category>
+		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="13">
-		<address>first.last@[IPv6:1111:2222:3333:4444:5555:6666:12.34.56.78]</address>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@iana.a</address>
+		<category>ISEMAIL_DNSWARN</category>
+		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="14">
-		<address>first.last@[IPv6:::1111:2222:3333:4444:5555:6666]</address>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test.test@iana.org</address>
+		<category>ISEMAIL_VALID_CATEGORY</category>
+		<diagnosis>ISEMAIL_VALID</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="15">
-		<address>first.last@[IPv6:1111:2222:3333::4444:5555:6666]</address>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>.test@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_DOT_START</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="16">
-		<address>first.last@[IPv6:1111:2222:3333:4444:5555:6666::]</address>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test.@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_DOT_END</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="17">
-		<address>first.last@[IPv6:1111:2222:3333:4444:5555:6666:7777:8888]</address>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test..iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_CONSECUTIVEDOTS</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="18">
-		<address>first.last@x23456789012345678901234567890123456789012345678901234567890123.iana.org</address>
-		<category>7</category>
-		<diagnosis>6</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test_exa-mple.com</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_NODOMAIN</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="19">
-		<address>first.last@3com.com</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>!#$%&amp;`*+/=?^`{|}~@iana.org</address>
+		<category>ISEMAIL_VALID_CATEGORY</category>
+		<diagnosis>ISEMAIL_VALID</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="20">
-		<address>first.last@123.iana.org</address>
-		<category>7</category>
-		<diagnosis>6</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test\@test@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_ATEXT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="21">
-		<address>123456789012345678901234567890123456789012345678901234567890@12345678901234567890123456789012345678901234567890123456789.12345678901234567890123456789012345678901234567890123456789.12345678901234567890123456789012345678901234567890123456789.12345.iana.org</address>
-		<comment>Entire address is longer than 254 characters</comment>
-		<category>127</category>
-		<diagnosis>66</diagnosis>
-		<source>RFC 3696 erratum 1690</source>
-		<sourcelink>http://www.rfc-editor.org/errata_search.php?rfc=3696&amp;eid=1690</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>123@iana.org</address>
+		<category>ISEMAIL_VALID_CATEGORY</category>
+		<diagnosis>ISEMAIL_VALID</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="22">
-		<address>first.last</address>
-		<comment>No @</comment>
-		<category>255</category>
-		<diagnosis>132</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@123.com</address>
+		<category>ISEMAIL_VALID_CATEGORY</category>
+		<diagnosis>ISEMAIL_VALID</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="23">
-		<address>12345678901234567890123456789012345678901234567890123456789012345@iana.org</address>
-		<comment>Local part more than 64 characters</comment>
-		<category>127</category>
-		<diagnosis>67</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@iana.123</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_TLDNUMERIC</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="24">
-		<address>.first.last@iana.org</address>
-		<comment>Local part starts with a dot</comment>
-		<category>255</category>
-		<diagnosis>142</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@255.255.255.255</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_TLDNUMERIC</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="25">
-		<address>first.last.@iana.org</address>
-		<comment>Local part ends with a dot</comment>
-		<category>255</category>
-		<diagnosis>143</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghiklm@iana.org</address>
+		<category>ISEMAIL_VALID_CATEGORY</category>
+		<diagnosis>ISEMAIL_VALID</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="26">
-		<address>first..last@iana.org</address>
-		<comment>Local part has consecutive dots</comment>
-		<category>255</category>
-		<diagnosis>133</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghiklmn@iana.org</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_LOCAL_TOOLONG</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="27">
-		<address>"first"last"@iana.org</address>
-		<comment>Local part contains unescaped excluded characters</comment>
-		<category>255</category>
-		<diagnosis>135</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.com</address>
+		<category>ISEMAIL_DNSWARN</category>
+		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="28">
-		<address>"first\last"@iana.org</address>
-		<comment>Any character can be escaped in a quoted string</comment>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghiklm.com</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_LABEL_TOOLONG</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="29">
-		<address>"""@iana.org</address>
-		<comment>Local part contains unescaped excluded characters</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@mason-dixon.com</address>
+		<category>ISEMAIL_VALID_CATEGORY</category>
+		<diagnosis>ISEMAIL_VALID</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="30">
-		<address>"\"@iana.org</address>
-		<comment>Local part cannot end with a backslash</comment>
-		<category>255</category>
-		<diagnosis>146</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@-iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_DOMAINHYPHENSTART</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="31">
-		<address>""@iana.org</address>
-		<comment>Local part is effectively empty, but this form is specifically allowed by RFC 5322 &amp; RFC 5321</comment>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@iana-.com</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_DOMAINHYPHENEND</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="32">
-		<address>first\\@last@iana.org</address>
-		<comment>Local part contains unescaped excluded characters</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@g--a.com</address>
+		<category>ISEMAIL_VALID_CATEGORY</category>
+		<diagnosis>ISEMAIL_VALID</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="33">
-		<address>first.last@</address>
-		<comment>No domain</comment>
-		<category>255</category>
-		<diagnosis>132</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@iana.co-uk</address>
+		<category>ISEMAIL_DNSWARN</category>
+		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="34">
-		<address>x@x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456789.x23456</address>
-		<comment>Domain exceeds 255 chars</comment>
-		<category>127</category>
-		<diagnosis>68</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@.iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_DOT_START</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="35">
-		<address>first.last@[.12.34.56.78]</address>
-		<comment>Only char that can precede IPv4 address is ':'</comment>
-		<category>127</category>
-		<diagnosis>70</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@iana.org.</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_DOT_END</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="36">
-		<address>first.last@[12.34.56.789]</address>
-		<comment>Can't be interpreted as IPv4 so IPv6 tag is missing</comment>
-		<category>127</category>
-		<diagnosis>70</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@iana..com</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_CONSECUTIVEDOTS</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="37">
-		<address>first.last@[::12.34.56.78]</address>
-		<comment>IPv6 tag is missing</comment>
-		<category>127</category>
-		<diagnosis>70</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>a@a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v</address>
+		<category>ISEMAIL_DNSWARN</category>
+		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="38">
-		<address>first.last@[IPv5:::12.34.56.78]</address>
-		<comment>IPv6 tag is wrong</comment>
-		<category>127</category>
-		<diagnosis>70</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghiklm@abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghi</address>
+		<category>ISEMAIL_DNSWARN</category>
+		<diagnosis>ISEMAIL_DNSWARN_DOMAINNOTFOUND</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="39">
-		<address>first.last@[IPv6:1111:2222:3333::4444:5555:12.34.56.78]</address>
-		<comment>RFC 4291 disagrees with RFC 5321 but is cited by it</comment>
-		<category>15</category>
-		<diagnosis>13</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghiklm@abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghij</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_TOOLONG</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="40">
-		<address>first.last@[IPv6:1111:2222:3333:4444:5555:12.34.56.78]</address>
-		<comment>Not enough IPv6 groups</comment>
-		<category>127</category>
-		<diagnosis>71</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>a@abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefg.hij</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_TOOLONG</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="41">
-		<address>first.last@[IPv6:1111:2222:3333:4444:5555:6666:7777:12.34.56.78]</address>
-		<comment>Too many IPv6 groups (6 max)</comment>
-		<category>127</category>
-		<diagnosis>71</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>a@abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefg.hijk</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_DOMAIN_TOOLONG</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="42">
-		<address>first.last@[IPv6:1111:2222:3333:4444:5555:6666:7777]</address>
-		<comment>Not enough IPv6 groups</comment>
-		<category>127</category>
-		<diagnosis>71</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>"test"@iana.org</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_QUOTEDSTRING</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="43">
-		<address>first.last@[IPv6:1111:2222:3333:4444:5555:6666:7777:8888:9999]</address>
-		<comment>Too many IPv6 groups (8 max)</comment>
-		<category>127</category>
-		<diagnosis>71</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>""@iana.org</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_QUOTEDSTRING</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="44">
-		<address>first.last@[IPv6:1111:2222::3333::4444:5555:6666]</address>
-		<comment>Too many '::' (can be none or one)</comment>
-		<category>127</category>
-		<diagnosis>72</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>"""@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_ATEXT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="45">
-		<address>first.last@[IPv6:1111:2222:3333::4444:5555:6666:7777]</address>
-		<comment>RFC 4291 disagrees with RFC 5321 but is cited by it</comment>
-		<category>15</category>
-		<diagnosis>13</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>"\a"@iana.org</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_QUOTEDSTRING</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="46">
-		<address>first.last@[IPv6:1111:2222:333x::4444:5555]</address>
-		<comment>x is not valid in an IPv6 address</comment>
-		<category>127</category>
-		<diagnosis>73</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>"\""@iana.org</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_QUOTEDSTRING</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="47">
-		<address>first.last@[IPv6:1111:2222:33333::4444:5555]</address>
-		<comment>33333 is not a valid group in an IPv6 address</comment>
-		<category>127</category>
-		<diagnosis>73</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>"\"@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_UNCLOSEDQUOTEDSTR</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="48">
-		<address>first.last@example.123</address>
-		<comment>TLD can't be all digits</comment>
-		<category>15</category>
-		<diagnosis>10</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>"\\"@iana.org</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_QUOTEDSTRING</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="49">
-		<address>first.last@com</address>
-		<comment>Mail host must be second- or lower level</comment>
-		<category>15</category>
-		<diagnosis>9</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test"@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_ATEXT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="50">
-		<address>first.last@-xample.com</address>
-		<comment>Label can't begin with a hyphen</comment>
-		<category>255</category>
-		<diagnosis>144</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>"test@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_UNCLOSEDQUOTEDSTR</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="51">
-		<address>first.last@exampl-.com</address>
-		<comment>Label can't end with a hyphen</comment>
-		<category>255</category>
-		<diagnosis>145</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>"test"test@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_ATEXT_AFTER_QS</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="52">
-		<address>first.last@x234567890123456789012345678901234567890123456789012345678901234.iana.org</address>
-		<comment>Label can't be longer than 63 octets</comment>
-		<category>127</category>
-		<diagnosis>69</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test"text"@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_ATEXT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="53">
-		<address>"Abc\@def"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>RFC 3696 (February 2004)</source>
-		<sourcelink>http://tools.ietf.org/html/rfc3696#section-3</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>"test""test"@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_ATEXT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="54">
-		<address>"Fred\ Bloggs"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>RFC 3696 (as amended by erratum 2005-07-09)</source>
-		<sourcelink>http://www.rfc-editor.org/errata_search.php?rfc=3696&amp;eid=246</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>"test"."test"@iana.org</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_LOCALPART</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="55">
-		<address>"Joe.\\Blow"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>RFC 3696 (as amended by erratum 2005-07-09)</source>
-		<sourcelink>http://www.rfc-editor.org/errata_search.php?rfc=3696&amp;eid=246</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>"test\ test"@iana.org</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_QUOTEDSTRING</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="56">
-		<address>"Abc@def"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>RFC 3696 (as amended by erratum 2005-07-09)</source>
-		<sourcelink>http://www.rfc-editor.org/errata_search.php?rfc=3696&amp;eid=246</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>"test".test@iana.org</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_LOCALPART</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="57">
-		<address>"Fred Bloggs"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>RFC 3696 (February 2004)</source>
-		<sourcelink>http://tools.ietf.org/html/rfc3696#section-3</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>"test&#x2400;"@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_QTEXT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="58">
-		<address>user+mailbox@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>RFC 3696 (February 2004)</source>
-		<sourcelink>http://tools.ietf.org/html/rfc3696#section-3</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>"test\&#x2400;"@iana.org</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_QP</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="59">
-		<address>customer/department=shipping@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>RFC 3696 (February 2004)</source>
-		<sourcelink>http://tools.ietf.org/html/rfc3696#section-3</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>"abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghj"@iana.org</address>
+		<comment>Quotes are still part of the length restriction</comment>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_LOCAL_TOOLONG</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="60">
-		<address>$A12345@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>RFC 3696 (February 2004)</source>
-		<sourcelink>http://tools.ietf.org/html/rfc3696#section-3</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>"abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefg\h"@iana.org</address>
+		<comment>Quoted pair is still part of the length restriction</comment>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_LOCAL_TOOLONG</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="61">
-		<address>!def!xyz%abc@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>RFC 3696 (February 2004)</source>
-		<sourcelink>http://tools.ietf.org/html/rfc3696#section-3</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>test@[255.255.255.255]</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_ADDRESSLITERAL</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="62">
-		<address>_somename@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>RFC 3696 (February 2004)</source>
-		<sourcelink>http://tools.ietf.org/html/rfc3696#section-3</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>test@a[255.255.255.255]</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_ATEXT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="63">
-		<address>dclo@us.ibm.com</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>test@[255.255.255]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_DOMAINLITERAL</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="64">
-		<address>abc\@def@iana.org</address>
-		<comment>This example from RFC 3696 was corrected in an erratum</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[255.255.255.255.255]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_DOMAINLITERAL</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="65">
-		<address>abc\\@iana.org</address>
-		<comment>This example from RFC 3696 was corrected in an erratum</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[255.255.255.256]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_DOMAINLITERAL</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="66">
-		<address>peter.piper@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>test@[1111:2222:3333:4444:5555:6666:7777:8888]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_DOMAINLITERAL</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="67">
-		<address>Doug\ \"Ace\"\ Lovell@iana.org</address>
-		<comment>Escaping can only happen in a quoted string</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666:7777]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_IPV6_GRPCOUNT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="68">
-		<address>"Doug \"Ace\" L."@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666:7777:8888]</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_ADDRESSLITERAL</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="69">
-		<address>abc@def@iana.org</address>
-		<comment>Doug Lovell says this should fail</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666:7777:8888:9999]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_IPV6_GRPCOUNT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="70">
-		<address>abc\\@def@iana.org</address>
-		<comment>Doug Lovell says this should fail</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666:7777:888G]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_IPV6_BADCHAR</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="71">
-		<address>abc\@iana.org</address>
-		<comment>Doug Lovell says this should fail</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666::8888]</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_IPV6DEPRECATED</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="72">
-		<address>@iana.org</address>
-		<comment>No local part</comment>
-		<category>255</category>
-		<diagnosis>131</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[IPv6:1111:2222:3333:4444:5555::8888]</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_ADDRESSLITERAL</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="73">
-		<address>doug@</address>
-		<comment>Doug Lovell says this should fail</comment>
-		<category>255</category>
-		<diagnosis>132</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666::7777:8888]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_IPV6_MAXGRPS</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="74">
-		<address>"qu@iana.org</address>
-		<comment>Doug Lovell says this should fail</comment>
-		<category>255</category>
-		<diagnosis>146</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[IPv6::3333:4444:5555:6666:7777:8888]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_IPV6_COLONSTRT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="75">
-		<address>ote"@iana.org</address>
-		<comment>Doug Lovell says this should fail</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[IPv6:::3333:4444:5555:6666:7777:8888]</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_ADDRESSLITERAL</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="76">
-		<address>.dot@iana.org</address>
-		<comment>Doug Lovell says this should fail</comment>
-		<category>255</category>
-		<diagnosis>142</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[IPv6:1111::4444:5555::8888]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_IPV6_2X2XCOLON</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="77">
-		<address>dot.@iana.org</address>
-		<comment>Doug Lovell says this should fail</comment>
-		<category>255</category>
-		<diagnosis>143</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[IPv6:::]</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_ADDRESSLITERAL</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="78">
-		<address>two..dot@iana.org</address>
-		<comment>Doug Lovell says this should fail</comment>
-		<category>255</category>
-		<diagnosis>133</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[IPv6:1111:2222:3333:4444:5555:255.255.255.255]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_IPV6_GRPCOUNT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="79">
-		<address>"Doug "Ace" L."@iana.org</address>
-		<comment>Doug Lovell says this should fail</comment>
-		<category>255</category>
-		<diagnosis>135</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666:255.255.255.255]</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_ADDRESSLITERAL</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="80">
-		<address>Doug\ \"Ace\"\ L\.@iana.org</address>
-		<comment>Doug Lovell says this should fail</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666:7777:255.255.255.255]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_IPV6_GRPCOUNT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="81">
-		<address>hello world@iana.org</address>
-		<comment>Doug Lovell says this should fail</comment>
-		<category>255</category>
-		<diagnosis>134</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[IPv6:1111:2222:3333:4444::255.255.255.255]</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_ADDRESSLITERAL</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="82">
-		<address>gatsby@f.sc.ot.t.f.i.tzg.era.l.d.</address>
-		<comment>Doug Lovell says this should fail</comment>
-		<category>255</category>
-		<diagnosis>143</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[IPv6:1111:2222:3333:4444:5555:6666::255.255.255.255]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_IPV6_MAXGRPS</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="83">
-		<address>test@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>test@[IPv6:1111:2222:3333:4444:::255.255.255.255]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_IPV6_2X2XCOLON</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="84">
-		<address>TEST@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>test@[IPv6::255.255.255.255]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_IPV6_COLONSTRT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="85">
-		<address>1234567890@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address> test @iana.org</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_CFWS_NEAR_AT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="86">
-		<address>test+test@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>test@ iana .com</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_CFWS_NEAR_AT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="87">
-		<address>test-test@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>test . test@iana.org</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_FWS</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="88">
-		<address>t*est@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>&#x240D;&#x240A; test@iana.org</address>
+		<comment>FWS</comment>
+		<category>ISEMAIL_CFWS</category>
+		<diagnosis>ISEMAIL_CFWS_FWS</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="89">
-		<address>+1~1+@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>&#x240D;&#x240A; &#x240D;&#x240A; test@iana.org</address>
+		<comment>FWS with one line composed entirely of WSP -- only allowed as obsolete FWS (someone might allow only non-obsolete FWS)</comment>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_FWS</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="90">
-		<address>{_test_}@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>(comment)test@iana.org</address>
+		<category>ISEMAIL_CFWS</category>
+		<diagnosis>ISEMAIL_CFWS_COMMENT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="91">
-		<address>"[[ test ]]"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>((comment)test@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_UNCLOSEDCOMMENT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="92">
-		<address>test.test@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>(comment(comment))test@iana.org</address>
+		<category>ISEMAIL_CFWS</category>
+		<diagnosis>ISEMAIL_CFWS_COMMENT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="93">
-		<address>"test.test"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@(comment)iana.org</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_CFWS_NEAR_AT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="94">
-		<address>test."test"@iana.org</address>
-		<comment>Obsolete form, but documented in RFC 5322</comment>
-		<category>63</category>
-		<diagnosis>39</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test(comment)test@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_ATEXT_AFTER_CFWS</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="95">
-		<address>"test@test"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@(comment)[255.255.255.255]</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_CFWS_NEAR_AT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="96">
-		<address>test@123.123.123.x123</address>
-		<category>7</category>
-		<diagnosis>6</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>(comment)abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghiklm@iana.org</address>
+		<category>ISEMAIL_CFWS</category>
+		<diagnosis>ISEMAIL_CFWS_COMMENT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="97">
-		<address>test@123.123.123.123</address>
-		<comment>Top Level Domain unlikely to have first character numeric (although ICANN make up their own rules).</comment>
-		<category>15</category>
-		<diagnosis>10</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@(comment)abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghikl.com</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_CFWS_NEAR_AT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="98">
-		<address>test@[123.123.123.123]</address>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>(comment)test@abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghik.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghik.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijk.abcdefghijklmnopqrstuvwxyzabcdefghijk.abcdefghijklmnopqrstu</address>
+		<category>ISEMAIL_CFWS</category>
+		<diagnosis>ISEMAIL_CFWS_COMMENT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="99">
-		<address>test@example.iana.org</address>
-		<category>7</category>
-		<diagnosis>6</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@iana.org&#x240A;</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_ATEXT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="100">
-		<address>test@example.example.iana.org</address>
-		<category>7</category>
-		<diagnosis>6</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@xn--hxajbheg2az3al.xn--jxalpdlp</address>
+		<comment>A valid IDN from ICANN's <a href="http://idn.icann.org/#The_example.test_names">IDN TLD evaluation gateway</a></comment>
+		<category>ISEMAIL_VALID_CATEGORY</category>
+		<diagnosis>ISEMAIL_VALID</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="101">
-		<address>test.iana.org</address>
-		<category>255</category>
-		<diagnosis>132</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>xn--test@iana.org</address>
+		<comment>RFC 3490: "unless the
+   email standards are revised to invite the use of IDNA for local
+   parts, a domain label that holds the local part of an email address
+   SHOULD NOT begin with the ACE prefix, and even if it does, it is to
+   be interpreted literally as a local part that happens to begin with
+   the ACE prefix"</comment>
+		<category>ISEMAIL_VALID_CATEGORY</category>
+		<diagnosis>ISEMAIL_VALID</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="102">
-		<address>test.@iana.org</address>
-		<category>255</category>
-		<diagnosis>143</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@iana.org-</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_DOMAINHYPHENEND</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="103">
-		<address>test..test@iana.org</address>
-		<category>255</category>
-		<diagnosis>133</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>"test@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_UNCLOSEDQUOTEDSTR</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="104">
-		<address>.test@iana.org</address>
-		<category>255</category>
-		<diagnosis>142</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>(test@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_UNCLOSEDCOMMENT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="105">
-		<address>test@test@iana.org</address>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@(iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_UNCLOSEDCOMMENT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="106">
-		<address>test@@iana.org</address>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[1.2.3.4</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_UNCLOSEDDOMLIT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="107">
-		<address>-- test --@iana.org</address>
-		<comment>No spaces allowed in local part</comment>
-		<category>255</category>
-		<diagnosis>134</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>"test\"@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_UNCLOSEDQUOTEDSTR</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="108">
-		<address>[test]@iana.org</address>
-		<comment>Square brackets only allowed within quotes</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>(comment\)test@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_UNCLOSEDCOMMENT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="109">
-		<address>"test\test"@iana.org</address>
-		<comment>Any character can be escaped in a quoted string</comment>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@iana.org(comment\)</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_UNCLOSEDCOMMENT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="110">
-		<address>"test"test"@iana.org</address>
-		<comment>Quotes cannot be nested</comment>
-		<category>255</category>
-		<diagnosis>135</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="111">
-		<address>()[]\;:,&gt;&lt;@iana.org</address>
-		<comment>Disallowed Characters</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@iana.org(comment\</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_BACKSLASHEND</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="112">
-		<address>test@.</address>
-		<comment>Dave Child says so</comment>
-		<category>255</category>
-		<diagnosis>142</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[RFC-5322-domain-literal]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_DOMAINLITERAL</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="113">
-		<address>test@example.</address>
-		<comment>Dave Child says so</comment>
-		<category>255</category>
-		<diagnosis>143</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[RFC-5322]-domain-literal]</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_ATEXT_AFTER_DOMLIT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="114">
-		<address>test@.org</address>
-		<comment>Dave Child says so</comment>
-		<category>255</category>
-		<diagnosis>142</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[RFC-5322-[domain-literal]</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_DTEXT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="115">
-		<address>test@123456789012345678901234567890123456789012345678901234567890123.123456789012345678901234567890123456789012345678901234567890123.123456789012345678901234567890123456789012345678901234567890123.123456789012345678901234567890123456789012345678901234567890.com</address>
-		<comment>255 characters is maximum length for domain. This is 256.</comment>
-		<category>127</category>
-		<diagnosis>68</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[RFC-5322-\&#x2407;-domain-literal]</address>
+		<comment>obs-dtext <strong>and</strong> obs-qp</comment>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_DOMLIT_OBSDTEXT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="116">
-		<address>test@example</address>
-		<comment>Dave Child says so</comment>
-		<category>15</category>
-		<diagnosis>9</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@[RFC-5322-\&#x2409;-domain-literal]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_DOMLIT_OBSDTEXT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="117">
-		<address>test@[123.123.123.123</address>
-		<comment>Dave Child says so</comment>
-		<category>255</category>
-		<diagnosis>148</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[RFC-5322-\]-domain-literal]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_DOMLIT_OBSDTEXT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="118">
-		<address>test@123.123.123.123]</address>
-		<comment>Dave Child says so</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Dave Child</source>
-		<sourcelink>http://code.google.com/p/php-email-address-validation/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[RFC-5322-domain-literal\]</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_UNCLOSEDDOMLIT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="119">
-		<address>NotAnEmail</address>
-		<comment>Phil Haack says so</comment>
-		<category>255</category>
-		<diagnosis>132</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[RFC-5322-domain-literal\</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_BACKSLASHEND</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="120">
-		<address>@NotAnEmail</address>
-		<comment>Phil Haack says so</comment>
-		<category>255</category>
-		<diagnosis>131</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[RFC 5322 domain literal]</address>
+		<comment>Spaces are FWS in a domain literal</comment>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_DOMAINLITERAL</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="121">
-		<address>"test\\blah"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@[RFC-5322-domain-literal] (comment)</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_DOMAINLITERAL</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="122">
-		<address>"test\blah"@iana.org</address>
-		<comment>Any character can be escaped in a quoted string</comment>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_ATEXT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="123">
-		<address>"test\&#x240D;blah"@iana.org</address>
-		<comment>Quoted string specifically excludes carriage returns unless escaped</comment>
-		<category>63</category>
-		<diagnosis>35</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_ATEXT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="124">
-		<address>"test&#x240D;blah"@iana.org</address>
-		<comment>Quoted string specifically excludes carriage returns</comment>
-		<category>255</category>
-		<diagnosis>151</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>""@iana.org</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_QTEXT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="125">
-		<address>"test\"blah"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>"\"@iana.org</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_QP</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="126">
-		<address>"test"blah"@iana.org</address>
-		<comment>Phil Haack says so</comment>
-		<category>255</category>
-		<diagnosis>135</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>()test@iana.org</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_CTEXT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="127">
-		<address>customer/department@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>test@iana.org&#x240D;</address>
+		<comment>No LF after the CR</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_CR_NO_LF</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="128">
-		<address>_Yosemite.Sam@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>&#x240D;test@iana.org</address>
+		<comment>No LF after the CR</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_CR_NO_LF</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="129">
-		<address>~@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>"&#x240D;test"@iana.org</address>
+		<comment>No LF after the CR</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_CR_NO_LF</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="130">
-		<address>.wooly@iana.org</address>
-		<comment>Phil Haack says so</comment>
-		<category>255</category>
-		<diagnosis>142</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>(&#x240D;)test@iana.org</address>
+		<comment>No LF after the CR</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_CR_NO_LF</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="131">
-		<address>wo..oly@iana.org</address>
-		<comment>Phil Haack says so</comment>
-		<category>255</category>
-		<diagnosis>133</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@iana.org(&#x240D;)</address>
+		<comment>No LF after the CR</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_CR_NO_LF</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="132">
-		<address>pootietang.@iana.org</address>
-		<comment>Phil Haack says so</comment>
-		<category>255</category>
-		<diagnosis>143</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>&#x240A;test@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_ATEXT</diagnosis>
+		<source>Michael Rushton</source>
+		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
 	</test>
 	<test id="133">
-		<address>.@iana.org</address>
-		<comment>Phil Haack says so</comment>
-		<category>255</category>
-		<diagnosis>142</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>"&#x240A;"@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_QTEXT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="134">
-		<address>"Austin@Powers"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>"\&#x240A;"@iana.org</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_QP</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="135">
-		<address>Ima.Fool@iana.org</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
+		<address>(&#x240A;)test@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_CTEXT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="136">
-		<address>"Ima.Fool"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>&#x2407;@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_ATEXT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="137">
-		<address>"Ima Fool"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
+		<address>test@&#x2407;.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_ATEXT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="138">
-		<address>Ima Fool@iana.org</address>
-		<comment>Phil Haack says so</comment>
-		<category>255</category>
-		<diagnosis>134</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>"&#x2407;"@iana.org</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_QTEXT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="139">
-		<address>phil.h\@\@ck@haacked.com</address>
-		<comment>Escaping can only happen in a quoted string</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>"\&#x2407;"@iana.org</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_QP</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="140">
-		<address>"first"."last"@iana.org</address>
-		<category>63</category>
-		<diagnosis>39</diagnosis>
+		<address>(&#x2407;)test@iana.org</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_CTEXT</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
 	</test>
 	<test id="141">
-		<address>"first".middle."last"@iana.org</address>
-		<category>63</category>
-		<diagnosis>39</diagnosis>
+		<address>&#x240D;&#x240A;test@iana.org</address>
+		<comment>Not FWS because no actual white space</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_FWS_CRLF_END</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
 	</test>
 	<test id="142">
-		<address>"first\\"last"@iana.org</address>
-		<comment>Contains an unescaped quote</comment>
-		<category>255</category>
-		<diagnosis>135</diagnosis>
+		<address>&#x240D;&#x240A; &#x240D;&#x240A;test@iana.org</address>
+		<comment>Not obs-FWS because there must be white space on each "fold"</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_FWS_CRLF_END</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
 	</test>
 	<test id="143">
-		<address>"first".last@iana.org</address>
-		<comment>obs-local-part form as described in RFC 5322</comment>
-		<category>63</category>
-		<diagnosis>39</diagnosis>
+		<address> &#x240D;&#x240A;test@iana.org</address>
+		<comment>Not FWS because no white space after the fold</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_FWS_CRLF_END</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
 	</test>
 	<test id="144">
-		<address>first."last"@iana.org</address>
-		<comment>obs-local-part form as described in RFC 5322</comment>
-		<category>63</category>
-		<diagnosis>39</diagnosis>
+		<address> &#x240D;&#x240A; test@iana.org</address>
+		<comment>FWS</comment>
+		<category>ISEMAIL_CFWS</category>
+		<diagnosis>ISEMAIL_CFWS_FWS</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
 	</test>
 	<test id="145">
-		<address>"first"."middle"."last"@iana.org</address>
-		<comment>obs-local-part form as described in RFC 5322</comment>
-		<category>63</category>
-		<diagnosis>39</diagnosis>
+		<address> &#x240D;&#x240A; &#x240D;&#x240A;test@iana.org</address>
+		<comment>Not FWS because no white space after the second fold</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_FWS_CRLF_END</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
 	</test>
 	<test id="146">
-		<address>"first.middle"."last"@iana.org</address>
-		<comment>obs-local-part form as described in RFC 5322</comment>
-		<category>63</category>
-		<diagnosis>39</diagnosis>
+		<address> &#x240D;&#x240A;&#x240D;&#x240A;test@iana.org</address>
+		<comment>Not FWS because no white space after either fold</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_FWS_CRLF_X2</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
 	</test>
 	<test id="147">
-		<address>"first.middle.last"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
+		<address> &#x240D;&#x240A;&#x240D;&#x240A; test@iana.org</address>
+		<comment>Not FWS because no white space after the first fold</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_FWS_CRLF_X2</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
 	</test>
 	<test id="148">
-		<address>"first..last"@iana.org</address>
-		<comment>obs-local-part form as described in RFC 5322</comment>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
+		<address>test@iana.org&#x240D;&#x240A; </address>
+		<comment>FWS</comment>
+		<category>ISEMAIL_CFWS</category>
+		<diagnosis>ISEMAIL_CFWS_FWS</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
 	</test>
 	<test id="149">
-		<address>foo@[\1.2.3.4]</address>
-		<comment>RFC 5321 specifies the syntax for address-literal and does not allow escaping</comment>
-		<category>63</category>
-		<diagnosis>40</diagnosis>
-		<source>Cal Henderson</source>
-		<sourcelink>http://code.iamcal.com/php/rfc822/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@iana.org&#x240D;&#x240A; &#x240D;&#x240A; </address>
+		<comment>FWS with one line composed entirely of WSP -- only allowed as obsolete FWS (someone might allow only non-obsolete FWS)</comment>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_FWS</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="150">
-		<address>"first\\\"last"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
+		<address>test@iana.org&#x240D;&#x240A;</address>
+		<comment>Not FWS because no actual white space</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_FWS_CRLF_END</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
 	</test>
 	<test id="151">
-		<address>first."mid\dle"."last"@iana.org</address>
-		<comment>Backslash can escape anything but must escape something</comment>
-		<category>63</category>
-		<diagnosis>39</diagnosis>
+		<address>test@iana.org&#x240D;&#x240A; &#x240D;&#x240A;</address>
+		<comment>Not obs-FWS because there must be white space on each "fold"</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_FWS_CRLF_END</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
 	</test>
 	<test id="152">
-		<address>Test.&#x240D;&#x240A; Folding.&#x240D;&#x240A; Whitespace@iana.org</address>
-		<category>63</category>
-		<diagnosis>33</diagnosis>
+		<address>test@iana.org &#x240D;&#x240A;</address>
+		<comment>Not FWS because no white space after the fold</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_FWS_CRLF_END</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
 	</test>
 	<test id="153">
-		<address>first."".last@iana.org</address>
-		<comment>Contains a zero-length element</comment>
-		<category>63</category>
-		<diagnosis>39</diagnosis>
+		<address>test@iana.org &#x240D;&#x240A; </address>
+		<comment>FWS</comment>
+		<category>ISEMAIL_CFWS</category>
+		<diagnosis>ISEMAIL_CFWS_FWS</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
 	</test>
 	<test id="154">
-		<address>first\last@iana.org</address>
-		<comment>Unquoted string must be an atom</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
+		<address>test@iana.org &#x240D;&#x240A; &#x240D;&#x240A;</address>
+		<comment>Not FWS because no white space after the second fold</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_FWS_CRLF_END</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
 	</test>
 	<test id="155">
-		<address>Abc\@def@iana.org</address>
-		<comment>Was incorrectly given as a valid address in the original RFC 3696</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>RFC 3696 erratum 246</source>
-		<sourcelink>http://www.rfc-editor.org/errata_search.php?rfc=3696&amp;eid=246</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@iana.org &#x240D;&#x240A;&#x240D;&#x240A;</address>
+		<comment>Not FWS because no white space after either fold</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_FWS_CRLF_X2</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="156">
-		<address>Fred\ Bloggs@iana.org</address>
-		<comment>Was incorrectly given as a valid address in the original RFC 3696</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>RFC 3696 erratum 246</source>
-		<sourcelink>http://www.rfc-editor.org/errata_search.php?rfc=3696&amp;eid=246</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@iana.org &#x240D;&#x240A;&#x240D;&#x240A; </address>
+		<comment>Not FWS because no white space after the first fold</comment>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_FWS_CRLF_X2</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="157">
-		<address>Joe.\\Blow@iana.org</address>
-		<comment>Was incorrectly given as a valid address in the original RFC 3696</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>RFC 3696 erratum 246</source>
-		<sourcelink>http://www.rfc-editor.org/errata_search.php?rfc=3696&amp;eid=246</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address> test@iana.org</address>
+		<category>ISEMAIL_CFWS</category>
+		<diagnosis>ISEMAIL_CFWS_FWS</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="158">
-		<address>first.last@[IPv6:1111:2222:3333:4444:5555:6666:12.34.567.89]</address>
-		<comment>IPv4 part contains an invalid octet</comment>
-		<category>127</category>
-		<diagnosis>73</diagnosis>
-		<source>Cal Henderson</source>
-		<sourcelink>http://code.iamcal.com/php/rfc822/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@iana.org </address>
+		<category>ISEMAIL_CFWS</category>
+		<diagnosis>ISEMAIL_CFWS_FWS</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="159">
-		<address>"test\&#x240D;&#x240A; blah"@iana.org</address>
-		<comment>Folding white space can't appear within a quoted pair</comment>
-		<category>255</category>
-		<diagnosis>139</diagnosis>
-		<source>Cal Henderson</source>
-		<sourcelink>http://code.iamcal.com/php/rfc822/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@[IPv6:1::2:]</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_IPV6_COLONEND</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="160">
-		<address>"test&#x240D;&#x240A; blah"@iana.org</address>
-		<comment>This is a valid quoted string with folding white space</comment>
-		<category>31</category>
-		<diagnosis>18</diagnosis>
-		<source>Phil Haack</source>
-		<sourcelink>http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>"test\&#xA9;"@iana.org</address>
+		<category>ISEMAIL_ERR</category>
+		<diagnosis>ISEMAIL_ERR_EXPECTING_QPAIR</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="161">
-		<address>{^c\@**Dog^}@cartoon.com</address>
-		<comment>This is a throwaway example from Doug Lovell's article. Actually it's not a valid address.</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Doug Lovell (LinuxJournal, June 2007)</source>
-		<sourcelink>http://www.linuxjournal.com/article/9585</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="162">
-		<address>(foo)cal(bar)@(baz)iamcal.com(quux)</address>
-		<comment>A valid address containing comments</comment>
-		<category>63</category>
-		<diagnosis>49</diagnosis>
-		<source>Cal Henderson</source>
-		<sourcelink>http://code.iamcal.com/php/rfc822/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="163">
-		<address>cal@iamcal(woo).(yay)com</address>
-		<comment>A valid address containing comments</comment>
-		<category>63</category>
-		<diagnosis>36</diagnosis>
-		<source>Cal Henderson</source>
-		<sourcelink>http://code.iamcal.com/php/rfc822/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="164">
-		<address>"foo"(yay)@(hoopla)[1.2.3.4]</address>
-		<comment>Address literal can't be commented (RFC 5321)</comment>
-		<category>63</category>
-		<diagnosis>49</diagnosis>
-		<source>Cal Henderson</source>
-		<sourcelink>http://code.iamcal.com/php/rfc822/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@iana/icann.org</address>
+		<category>ISEMAIL_RFC5322</category>
+		<diagnosis>ISEMAIL_RFC5322_DOMAIN</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="165">
-		<address>cal(woo(yay)hoopla)@iamcal.com</address>
-		<comment>A valid address containing comments</comment>
-		<category>63</category>
-		<diagnosis>49</diagnosis>
-		<source>Cal Henderson</source>
-		<sourcelink>http://code.iamcal.com/php/rfc822/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test.(comment)test@iana.org</address>
+		<category>ISEMAIL_DEPREC</category>
+		<diagnosis>ISEMAIL_DEPREC_COMMENT</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="166">
-		<address>cal(foo\@bar)@iamcal.com</address>
-		<comment>A valid address containing comments</comment>
-		<category>63</category>
-		<diagnosis>49</diagnosis>
-		<source>Cal Henderson</source>
-		<sourcelink>http://code.iamcal.com/php/rfc822/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+		<address>test@org</address>
+		<category>ISEMAIL_RFC5321</category>
+		<diagnosis>ISEMAIL_RFC5321_TLD</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
 	<test id="167">
-		<address>cal(foo\)bar)@iamcal.com</address>
-		<comment>A valid address containing comments and an escaped parenthesis</comment>
-		<category>63</category>
-		<diagnosis>49</diagnosis>
-		<source>Cal Henderson</source>
-		<sourcelink>http://code.iamcal.com/php/rfc822/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="168">
-		<address>cal(foo(bar)@iamcal.com</address>
-		<comment>Unclosed parenthesis in comment</comment>
-		<category>255</category>
-		<diagnosis>147</diagnosis>
-		<source>Cal Henderson</source>
-		<sourcelink>http://code.iamcal.com/php/rfc822/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="169">
-		<address>cal(foo)bar)@iamcal.com</address>
-		<comment>Too many closing parentheses</comment>
-		<category>255</category>
-		<diagnosis>134</diagnosis>
-		<source>Cal Henderson</source>
-		<sourcelink>http://code.iamcal.com/php/rfc822/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="170">
-		<address>cal(foo\)@iamcal.com</address>
-		<comment>Backslash at end of comment has nothing to escape</comment>
-		<category>255</category>
-		<diagnosis>147</diagnosis>
-		<source>Cal Henderson</source>
-		<sourcelink>http://code.iamcal.com/php/rfc822/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="171">
-		<address>first().last@iana.org</address>
-		<comment>A valid address containing an empty comment</comment>
-		<category>63</category>
-		<diagnosis>39</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="172">
-		<address>first.(&#x240D;&#x240A; middle&#x240D;&#x240A; )last@iana.org</address>
-		<comment>Comment with folding white space</comment>
-		<category>63</category>
-		<diagnosis>36</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="173">
-		<address>first(12345678901234567890123456789012345678901234567890)last@(1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890)iana.org</address>
-		<comment>Too long with comments, not too long without</comment>
-		<category>255</category>
-		<diagnosis>134</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="174">
-		<address>first(Welcome to&#x240D;&#x240A; the ("wonderful" (!)) world&#x240D;&#x240A; of email)@iana.org</address>
-		<comment>Silly example from my blog post</comment>
-		<category>63</category>
-		<diagnosis>49</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="175">
-		<address>pete(his account)@silly.test(his host)</address>
-		<comment>Canonical example from RFC 5322</comment>
-		<category>63</category>
-		<diagnosis>49</diagnosis>
-		<source>RFC 5322</source>
-		<sourcelink>http://tools.ietf.org/html/rfc5322</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="176">
-		<address>c@(Chris's host.)public.example</address>
-		<comment>Canonical example from RFC 5322</comment>
-		<category>63</category>
-		<diagnosis>49</diagnosis>
-		<source>RFC 5322</source>
-		<sourcelink>http://tools.ietf.org/html/rfc5322</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="177">
-		<address>jdoe@machine(comment).  example</address>
-		<comment>Canonical example from RFC 5322</comment>
-		<category>63</category>
-		<diagnosis>33</diagnosis>
-		<source>RFC 5322</source>
-		<sourcelink>http://tools.ietf.org/html/rfc5322</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="178">
-		<address>1234   @   local(blah)  .machine .example</address>
-		<comment>Canonical example from RFC 5322</comment>
-		<category>63</category>
-		<diagnosis>49</diagnosis>
-		<source>RFC 5322</source>
-		<sourcelink>http://tools.ietf.org/html/rfc5322</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="179">
-		<address>first(middle)last@iana.org</address>
-		<comment>Can't have a comment or white space except at an element boundary</comment>
-		<category>255</category>
-		<diagnosis>134</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="180">
-		<address>first(abc.def).last@iana.org</address>
-		<comment>Comment can contain a dot</comment>
-		<category>63</category>
-		<diagnosis>39</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="181">
-		<address>first(a"bc.def).last@iana.org</address>
-		<comment>Comment can contain double quote</comment>
-		<category>63</category>
-		<diagnosis>39</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="182">
-		<address>first.(")middle.last(")@iana.org</address>
-		<comment>Comment can contain a quote</comment>
-		<category>63</category>
-		<diagnosis>49</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="183">
-		<address>first(abc("def".ghi).mno)middle(abc("def".ghi).mno).last@(abc("def".ghi).mno)example(abc("def".ghi).mno).(abc("def".ghi).mno)com(abc("def".ghi).mno)</address>
-		<comment>Can't have comments or white space except at an element boundary</comment>
-		<category>255</category>
-		<diagnosis>134</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="184">
-		<address>first(abc\(def)@iana.org</address>
-		<comment>Comment can contain quoted-pair</comment>
-		<category>63</category>
-		<diagnosis>49</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="185">
-		<address>first.last@iana(1234567890123456789012345678901234567890123456789012345678901234567890).org</address>
-		<comment>Label is longer than 63 octets, but not with comment removed</comment>
-		<category>31</category>
-		<diagnosis>17</diagnosis>
-		<source>Cal Henderson</source>
-		<sourcelink>http://code.iamcal.com/php/rfc822/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="186">
-		<address>a(a(b(c)d(e(f))g)h(i)j)@iana.org</address>
-		<category>63</category>
-		<diagnosis>49</diagnosis>
-		<source>Cal Henderson</source>
-		<sourcelink>http://code.iamcal.com/php/rfc822/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="187">
-		<address>a(a(b(c)d(e(f))g)(h(i)j)@iana.org</address>
-		<comment>Braces are not properly matched</comment>
-		<category>255</category>
-		<diagnosis>147</diagnosis>
-		<source>Cal Henderson</source>
-		<sourcelink>http://code.iamcal.com/php/rfc822/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="188">
-		<address>name.lastname@domain.com</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
-	</test>
-	<test id="189">
-		<address>.@</address>
-		<category>255</category>
-		<diagnosis>142</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="190">
-		<address>a@b</address>
-		<category>15</category>
-		<diagnosis>9</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="191">
-		<address>@bar.com</address>
-		<category>255</category>
-		<diagnosis>131</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="192">
-		<address>@@bar.com</address>
-		<category>255</category>
-		<diagnosis>131</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="193">
-		<address>a@bar.com</address>
-		<category>7</category>
-		<diagnosis>4</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="194">
-		<address>aaa.com</address>
-		<category>255</category>
-		<diagnosis>132</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="195">
-		<address>aaa@.com</address>
-		<category>255</category>
-		<diagnosis>142</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="196">
-		<address>aaa@.123</address>
-		<category>255</category>
-		<diagnosis>142</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="197">
-		<address>aaa@[123.123.123.123]</address>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="198">
-		<address>aaa@[123.123.123.123]a</address>
-		<comment>extra data outside address-literal</comment>
-		<category>255</category>
-		<diagnosis>136</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="199">
-		<address>aaa@[123.123.123.333]</address>
-		<comment>not a valid IP</comment>
-		<category>127</category>
-		<diagnosis>70</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="200">
-		<address>a@bar.com.</address>
-		<category>255</category>
-		<diagnosis>143</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="201">
-		<address>a@bar</address>
-		<category>15</category>
-		<diagnosis>9</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="202">
-		<address>a-b@bar.com</address>
-		<category>7</category>
-		<diagnosis>4</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="203">
-		<address>+@b.c</address>
-		<comment>TLDs can be any length</comment>
-		<category>7</category>
-		<diagnosis>6</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="204">
-		<address>+@b.com</address>
-		<category>7</category>
-		<diagnosis>6</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="205">
-		<address>a@-b.com</address>
-		<category>255</category>
-		<diagnosis>144</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="206">
-		<address>a@b-.com</address>
-		<category>255</category>
-		<diagnosis>145</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="207">
-		<address>-@..com</address>
-		<category>255</category>
-		<diagnosis>142</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="208">
-		<address>-@a..com</address>
-		<category>255</category>
-		<diagnosis>133</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="209">
-		<address>a@b.co-foo.uk</address>
-		<category>7</category>
-		<diagnosis>6</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="210">
-		<address>"hello my name is"@stutter.com</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="211">
-		<address>"Test \"Fail\" Ing"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="212">
-		<address>valid@about.museum</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
-	</test>
-	<test id="213">
-		<address>invalid@about.museum-</address>
-		<category>255</category>
-		<diagnosis>145</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="214">
-		<address>shaitan@my-domain.thisisminekthx</address>
-		<comment>Disagree with Paul Gregg here</comment>
-		<category>7</category>
-		<diagnosis>6</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="215">
-		<address>test@...........com</address>
-		<comment>......</comment>
-		<category>255</category>
-		<diagnosis>142</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="216">
-		<address>foobar@192.168.0.1</address>
-		<comment>ip need to be []</comment>
-		<category>15</category>
-		<diagnosis>10</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="217">
-		<address>"Joe\\Blow"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="218">
-		<address>Invalid \&#x240A; Folding \&#x240A; Whitespace@iana.org</address>
-		<comment>Even obs-local-part doesn't allow CFWS in the middle of an atom</comment>
-		<category>255</category>
-		<diagnosis>134</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="219">
-		<address>HM2Kinsists@(that comments are allowed)this.is.ok</address>
-		<category>63</category>
-		<diagnosis>49</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="220">
-		<address>user%uucp!path@berkeley.edu</address>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>Paul Gregg</source>
-		<sourcelink>http://pgregg.com/projects/php/code/showvalidemail.php</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
-	</test>
-	<test id="221">
-		<address>"first(last)"@iana.org</address>
-		<category>15</category>
-		<diagnosis>11</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="222">
-		<address> &#x240D;&#x240A; (&#x240D;&#x240A; x &#x240D;&#x240A; ) &#x240D;&#x240A; first&#x240D;&#x240A; ( &#x240D;&#x240A; x&#x240D;&#x240A; ) &#x240D;&#x240A; .&#x240D;&#x240A; ( &#x240D;&#x240A; x) &#x240D;&#x240A; last &#x240D;&#x240A; (  x &#x240D;&#x240A; ) &#x240D;&#x240A; @iana.org</address>
-		<category>63</category>
-		<diagnosis>49</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="223">
-		<address>first.last @iana.org</address>
-		<comment>FWS is allowed after local part (this is similar to #152 but is the test proposed by John Kloor)</comment>
-		<category>63</category>
-		<diagnosis>49</diagnosis>
-		<source>John Kloor</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="224">
-		<address>test. &#x240D;&#x240A; &#x240D;&#x240A; obs@syntax.com</address>
-		<comment>obs-fws allows multiple lines (test 2: space before break)</comment>
-		<category>63</category>
-		<diagnosis>33</diagnosis>
-		<source>George Pollard</source>
-		<sourcelink>http://porg.es/blog/properly-validating-e-mail-addresses</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="225">
-		<address>test.&#x240D;&#x240A;&#x240D;&#x240A; obs@syntax.com</address>
-		<comment>obs-fws must have at least one WSP per line</comment>
-		<category>255</category>
-		<diagnosis>149</diagnosis>
-		<source>George Pollard</source>
-		<sourcelink>http://porg.es/blog/properly-validating-e-mail-addresses</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="226">
-		<address>"Unicode NULL \&#x2400;"@char.com</address>
-		<comment>Can have escaped Unicode Character 'NULL' (U+0000)</comment>
-		<category>63</category>
-		<diagnosis>35</diagnosis>
-		<source>George Pollard</source>
-		<sourcelink>http://porg.es/blog/properly-validating-e-mail-addresses</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="227">
-		<address>"Unicode NULL &#x2400;"@char.com</address>
-		<comment>Cannot have unescaped Unicode Character 'NULL' (U+0000)</comment>
-		<category>255</category>
-		<diagnosis>139</diagnosis>
-		<source>George Pollard</source>
-		<sourcelink>http://porg.es/blog/properly-validating-e-mail-addresses</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="228">
-		<address>Unicode NULL \&#x2400;@char.com</address>
-		<comment>Escaped Unicode Character 'NULL' (U+0000) must be in quoted string</comment>
-		<category>255</category>
-		<diagnosis>134</diagnosis>
-		<source>George Pollard</source>
-		<sourcelink>http://porg.es/blog/properly-validating-e-mail-addresses</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="229">
-		<address>cdburgess+!#$%&amp;'*-/=?+_{}|~test@gmail.com</address>
-		<comment>Example given in comments</comment>
-		<category>0</category>
-		<diagnosis>0</diagnosis>
-		<source>cdburgess</source>
-		<sourcelink>http://www.dominicsayers.com/isemail/#comment-30024957</sourcelink>
-		<valid>true</valid>
-		<warning>false</warning>
-	</test>
-	<test id="230">
-		<address>first.last@[IPv6:::a2:a3:a4:b1:b2:b3:b4]</address>
-		<comment>:: only elides one zero group (IPv6 authority is RFC 4291)</comment>
-		<category>15</category>
-		<diagnosis>13</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="231">
-		<address>first.last@[IPv6:a1:a2:a3:a4:b1:b2:b3::]</address>
-		<comment>:: only elides one zero group (IPv6 authority is RFC 4291)</comment>
-		<category>15</category>
-		<diagnosis>13</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="232">
-		<address>first.last@[IPv6::]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>75</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="233">
-		<address>first.last@[IPv6:::]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="234">
-		<address>first.last@[IPv6::::]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>72</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="235">
-		<address>first.last@[IPv6::b4]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>75</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="236">
-		<address>first.last@[IPv6:::b4]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="237">
-		<address>first.last@[IPv6::::b4]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>72</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="238">
-		<address>first.last@[IPv6::b3:b4]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>75</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="239">
-		<address>first.last@[IPv6:::b3:b4]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="240">
-		<address>first.last@[IPv6::::b3:b4]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>72</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="241">
-		<address>first.last@[IPv6:a1::b4]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="242">
-		<address>first.last@[IPv6:a1:::b4]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>72</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="243">
-		<address>first.last@[IPv6:a1:]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>76</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="244">
-		<address>first.last@[IPv6:a1::]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="245">
-		<address>first.last@[IPv6:a1:::]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>72</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="246">
-		<address>first.last@[IPv6:a1:a2:]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>76</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="247">
-		<address>first.last@[IPv6:a1:a2::]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="248">
-		<address>first.last@[IPv6:a1:a2:::]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>72</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="249">
-		<address>first.last@[IPv6:0123:4567:89ab:cdef::]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="250">
-		<address>first.last@[IPv6:0123:4567:89ab:CDEF::]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="251">
-		<address>first.last@[IPv6:::a3:a4:b1:ffff:11.22.33.44]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="252">
-		<address>first.last@[IPv6:::a2:a3:a4:b1:ffff:11.22.33.44]</address>
-		<comment>:: only elides one zero group (IPv6 authority is RFC 4291)</comment>
-		<category>15</category>
-		<diagnosis>13</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="253">
-		<address>first.last@[IPv6:a1:a2:a3:a4::11.22.33.44]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="254">
-		<address>first.last@[IPv6:a1:a2:a3:a4:b1::11.22.33.44]</address>
-		<comment>:: only elides one zero group (IPv6 authority is RFC 4291)</comment>
-		<category>15</category>
-		<diagnosis>13</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="255">
-		<address>first.last@[IPv6::11.22.33.44]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>75</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="256">
-		<address>first.last@[IPv6::::11.22.33.44]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>72</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="257">
-		<address>first.last@[IPv6:a1:11.22.33.44]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>71</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="258">
-		<address>first.last@[IPv6:a1::11.22.33.44]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="259">
-		<address>first.last@[IPv6:a1:::11.22.33.44]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>72</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="260">
-		<address>first.last@[IPv6:a1:a2::11.22.33.44]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="261">
-		<address>first.last@[IPv6:a1:a2:::11.22.33.44]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>72</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="262">
-		<address>first.last@[IPv6:0123:4567:89ab:cdef::11.22.33.44]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="263">
-		<address>first.last@[IPv6:0123:4567:89ab:cdef::11.22.33.xx]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>73</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="264">
-		<address>first.last@[IPv6:0123:4567:89ab:CDEF::11.22.33.44]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="265">
-		<address>first.last@[IPv6:0123:4567:89ab:CDEFF::11.22.33.44]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>73</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="266">
-		<address>first.last@[IPv6:a1::a4:b1::b4:11.22.33.44]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>72</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="267">
-		<address>first.last@[IPv6:a1::11.22.33]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>73</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="268">
-		<address>first.last@[IPv6:a1::11.22.33.44.55]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>73</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="269">
-		<address>first.last@[IPv6:a1::b211.22.33.44]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>73</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="270">
-		<address>first.last@[IPv6:a1::b2:11.22.33.44]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>15</category>
-		<diagnosis>12</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	<test id="271">
-		<address>first.last@[IPv6:a1::b2::11.22.33.44]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>72</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="272">
-		<address>first.last@[IPv6:a1::b3:]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>76</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="273">
-		<address>first.last@[IPv6::a2::b4]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>75</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="274">
-		<address>first.last@[IPv6:a1:a2:a3:a4:b1:b2:b3:]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>76</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="275">
-		<address>first.last@[IPv6::a2:a3:a4:b1:b2:b3:b4]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>75</diagnosis>
-		<source>Dominic Sayers</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="276">
-		<address>first.last@[IPv6:a1:a2:a3:a4::b1:b2:b3:b4]</address>
-		<comment>IPv6 authority is RFC 4291</comment>
-		<category>127</category>
-		<diagnosis>74</diagnosis>
-		<source>Daniel Marschall</source>
-		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
-	</test>
-	<test id="277">
 		<address>test@test.com</address>
 		<comment>test.com has an A-record but not an MX-record</comment>
-		<category>7</category>
-		<diagnosis>4</diagnosis>
+		<category>ISEMAIL_DNSWARN</category>
+		<diagnosis>ISEMAIL_DNSWARN_NO_MX_RECORD</diagnosis>
 		<source>Dominic Sayers</source>
 		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
 	</test>
-	<test id="278">
-		<address>test@example.com&#x240A;</address>
-		<comment>Address has a newline at the end</comment>
-		<category>255</category>
-		<diagnosis>138</diagnosis>
-		<source>Michael Rushton</source>
-		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
-		<valid>false</valid>
-		<warning>false</warning>
+	<test id="168">
+		<address>test@nic.no</address>
+		<comment>nic.no currently has no MX-records or A-records (Nov 2010)</comment>
+		<category>ISEMAIL_DNSWARN</category>
+		<diagnosis>ISEMAIL_DNSWARN_NO_RECORD</diagnosis>
+		<source>Dominic Sayers</source>
+		<sourcelink>http://www.dominicsayers.com/isemail</sourcelink>
 	</test>
-	<test id="279">
-		<address>test@xn--example.com</address>
-		<comment>Address is at an Internationalized Domain Name (Punycode)</comment>
-		<category>7</category>
-		<diagnosis>6</diagnosis>
-		<source>Michael Rushton</source>
-		<sourcelink>http://squiloople.com/tag/email/</sourcelink>
-		<valid>true</valid>
-		<warning>true</warning>
-	</test>
-	</tests>
+</tests>
