@@ -44,7 +44,7 @@ require_once './meta.php';
 	$result			= /*.(array[string]mixed).*/ array('actual' => array());
 	$parsedata		= /*.(array[string]string).*/ array();
 
-	$diagnosis_value		= is_email($email, true, ISEMAIL_DIAGNOSE, $parsedata);
+	$diagnosis_value		= is_email($email, true, true, &$parsedata);
 
 	$result['actual']['diagnosis']	= $diagnosis_value;
 	$result['actual']['parsedata']	= $parsedata;
@@ -153,6 +153,7 @@ PHP;
 		$constant_category	= $result['actual']['analysis'][ISEMAIL_META_CATEGORY];
 		$constant_diagnosis	= $result['actual']['analysis'][ISEMAIL_META_CONSTANT];
 		$text			= $result['actual']['analysis'][ISEMAIL_META_DESC];
+		$references		= (array_key_exists(ISEMAIL_META_REF_ALT, $result['actual']['analysis'])) ? '<span>' . $result['actual']['analysis'][ISEMAIL_META_REF_ALT] . '</span>' : '';
 
 		$comments		= /*.(array[int]string).*/ array();
 
@@ -177,22 +178,31 @@ PHP;
 			$rag_diagnosis	= '';
 		}
 
+		// Validity
+		$valid = ($diagnosis_result < ISEMAIL_THRESHOLD) ? 'valid' : 'invalid';
+
 		// Other diagnoses
 		$alternates = alternate_diagnoses($result['actual']['parsedata']['status'], $diagnosis_result);
 		if ($alternates !== '') $comments[] = $alternates;
 
 		$comments_html	= implode('<br/>', $comments);
 		$address_length = strlen($address);
-		$address_class	= ($address_length > 39) ? 'long' : (($address_length < 29) ? 'short' : 'medium');
+		$address_class	= ($address_length > 39) ? 'small' : (($address_length < 29) ? 'large' : 'medium');
 
 		$html .= <<<HTML
 			<tr id="$id">
 				<td><p class="address $address_class">$address_html</p></td>
-				<td><div class="infoblock">
-					<div class="label">Test #</div>		<div class="id">$id</div><br/>
-					<div class="label">Category</div>	<div class="category$class_category$rag_category">$constant_category</div><br/>
-					<div class="label">Diagnosis</div>	<div class="diagnosis$class_diagnosis$rag_diagnosis">$constant_diagnosis</div><br/>
-				</div></td>
+				<td>
+					<div class="infoblock">
+						<div class="validity"><p class="$valid $address_class"/></div>
+						<div>
+							<div class="label">Test #</div>		<div class="id">$id</div><br/>
+							<div class="label">Category</div>	<div class="category$class_category$rag_category">$constant_category</div><br/>
+							<div class="label">Diagnosis</div>	<div class="diagnosis$class_diagnosis$rag_diagnosis">$constant_diagnosis</div><br/>
+$references
+						</div>
+					</div>
+				</td>
 				<td><div class="comment">$comments_html</div></td>
 			</tr>
 
@@ -305,6 +315,12 @@ if (isset($_GET) && is_array($_GET)) {
 	} else if (array_key_exists('set', $_GET)) {	// Revision 2.11: Run any arbitrary test set
 		echo forms_html();
 		all_tests($_GET['set']);
+	} elseif (count($_GET) > 0) {
+		$keys	= array_keys($_GET);
+		$email	= array_shift($keys);
+		if (get_magic_quotes_gpc() !== 0) $email = stripslashes($email); // Version 2.6: BUG: The online test page didn't take account of the magic_quotes_gpc setting that some hosting providers insist on setting. Including mine.
+		echo forms_html($email);
+		test_single_address($email);
 	} else {
 		echo forms_html();
 	}

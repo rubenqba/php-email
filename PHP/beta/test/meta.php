@@ -34,9 +34,12 @@
  * @copyright	2008-2010 Dominic Sayers
  * @license	http://www.opensource.org/licenses/bsd-license.php BSD License
  * @link	http://www.dominicsayers.com/isemail
- * @version	3.0.6 - Second alpha of rewritten code
+ * @version	3.0.10 - Version 3.0 beta 1
  */
 
+/*.
+	require_module 'dom';
+.*/
 
 // What type of analysis data to return
 if (!defined('ISEMAIL_META_DESC')) {
@@ -61,8 +64,8 @@ if (!defined('ISEMAIL_META_DESC')) {
 /*
  * Return analysis of the is_email() return status
  */
-/*.mixed.*/ function is_email_analysis(/*.mixed.*/ $status, $type = ISEMAIL_META_DESC) {
-	$return = array();
+/*.mixed.*/ function is_email_analysis(/*.mixed.*/ $result, $type = ISEMAIL_META_DESC) {
+	$status = array();
 
 	// Grab the metadata
 	$document = new DOMDocument();
@@ -71,14 +74,14 @@ if (!defined('ISEMAIL_META_DESC')) {
         $XPath = new DOMXPath($document);
 
 	// If we received a value, need to find the associated constant name
-	if (is_int($status)) {
-	        $nodes		= $XPath->query("/meta/*/item/value[. = '$status']/../@id");
+	if (is_int($result)) {
+	        $nodes		= $XPath->query("/meta/*/item/value[. = '$result']/../@id");
 
-		$value		= $status;
+		$value		= $result;
 		$constant	= ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
-	} elseif (is_string($status)) {
-		$value		= constant($status);
-		$constant	= $status;
+	} elseif (is_string($result)) {
+		$value		= constant((string) $result);
+		$constant	= (string) $result;
 	} else {
 		return ISEMAIL_STRING_UNKNOWN;
 	}
@@ -92,11 +95,11 @@ if (!defined('ISEMAIL_META_DESC')) {
 	// Extract the bits we need
 	if ((bool) ($type & ISEMAIL_META_DESC)) {
 		$nodes = $XPath->query('description', $element);
-		$return[ISEMAIL_META_DESC] = ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
+		$status[ISEMAIL_META_DESC] = ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
 	}
 
 	if ((bool) ($type & ISEMAIL_META_CONSTANT)) {
-		$return[ISEMAIL_META_CONSTANT] = $constant;
+		$status[ISEMAIL_META_CONSTANT] = $constant;
 	}
 
 
@@ -106,7 +109,7 @@ if (!defined('ISEMAIL_META_DESC')) {
 		$element_smtp	= $XPath->query("/meta/*/item[@id = '$smtp']")->item(0);
 		$nodes		= $XPath->query('text', $element_smtp);
 
-		$return[ISEMAIL_META_SMTP] = ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
+		$status[ISEMAIL_META_SMTP] = ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
 	}
 
 	if ((bool) ($type & (ISEMAIL_META_CATEGORY|ISEMAIL_META_CAT_VALUE|ISEMAIL_META_CAT_DESC))) {
@@ -114,16 +117,16 @@ if (!defined('ISEMAIL_META_DESC')) {
 		$category	= ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
 
 		if ((bool) ($type & ISEMAIL_META_CATEGORY))
-			$return[ISEMAIL_META_CATEGORY] = $category;
+			$status[ISEMAIL_META_CATEGORY] = $category;
 
 		if ((bool) ($type & ISEMAIL_META_CAT_VALUE))
-			$return[ISEMAIL_META_CAT_VALUE] = constant($category);
+			$status[ISEMAIL_META_CAT_VALUE] = (string) constant($category);
 
 		if ((bool) ($type & ISEMAIL_META_CAT_DESC)) {
 			$element_category	= $XPath->query("/meta/*/item[@id = '$category']")->item(0);
 			$nodes			= $XPath->query('description', $element_category);
 
-			$return[ISEMAIL_META_CAT_DESC] = ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
+			$status[ISEMAIL_META_CAT_DESC] = ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
 		}
 	}
 
@@ -133,45 +136,45 @@ if (!defined('ISEMAIL_META_DESC')) {
 		$separator_cite	= '';
 		$separator_link	= '';
 
-		if ($references->length === 0) return $return;
+		if ($references->length === 0) return $status;
 
 		foreach ($references as $reference_node) {
 			$reference	= $reference_node->nodeValue;
 			$element_ref	= $XPath->query("/meta/*/item[@id = '$reference']")->item(0);
 
 			if ((bool) ($type & ISEMAIL_META_REF_TEXT)) {
-				if (!array_key_exists(ISEMAIL_META_REF_TEXT, $return)) $return[ISEMAIL_META_REF_TEXT] = '';
+				if (!array_key_exists(ISEMAIL_META_REF_TEXT, $status)) $status[ISEMAIL_META_REF_TEXT] = '';
 
 				$nodes					= $XPath->query('blockquote', $element_ref);
-				$return[ISEMAIL_META_REF_TEXT]		.= $separator_text . ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
+				$status[ISEMAIL_META_REF_TEXT]		.= $separator_text . ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
 				$separator_text				= PHP_EOL;	// Separate blocks of text with CRLFs
 			}
 
 			if ((bool) ($type & ISEMAIL_META_REF_CITE)) {
-				if (!array_key_exists(ISEMAIL_META_REF_CITE, $return)) $return[ISEMAIL_META_REF_CITE] = '';
+				if (!array_key_exists(ISEMAIL_META_REF_CITE, $status)) $status[ISEMAIL_META_REF_CITE] = '';
 
 				$nodes					= $XPath->query('cite', $element_ref);
-				$return[ISEMAIL_META_REF_CITE]		.= $separator_cite . ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
+				$status[ISEMAIL_META_REF_CITE]		.= $separator_cite . ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
 				$separator_cite				= ', ';	// comma-separated list of reference citations
 			}
 
 			if ((bool) ($type & ISEMAIL_META_REF_LINK)) {
-				if (!array_key_exists(ISEMAIL_META_REF_LINK, $return)) $return[ISEMAIL_META_REF_LINK] = '';
+				if (!array_key_exists(ISEMAIL_META_REF_LINK, $status)) $status[ISEMAIL_META_REF_LINK] = '';
 
 				$nodes					= $XPath->query('blockquote/@cite', $element_ref);
-				$return[ISEMAIL_META_REF_LINK]		.= $separator_link . ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
+				$status[ISEMAIL_META_REF_LINK]		.= $separator_link . ($nodes->length === 0) ? ISEMAIL_STRING_UNKNOWN : $nodes->item(0)->nodeValue;
 				$separator_link				.= chr(9);	// tab-separated list of URLs.
 			}
 
 			if ((bool) ($type & ISEMAIL_META_REF_HTML)) {
-				if (!array_key_exists(ISEMAIL_META_REF_HTML, $return)) $return[ISEMAIL_META_REF_HTML] = '';
+				if (!array_key_exists(ISEMAIL_META_REF_HTML, $status)) $status[ISEMAIL_META_REF_HTML] = '';
 
 				// Just pass back the XML we find - it is correct HTML
-				foreach ($element_ref->childNodes as $childNode) $return[ISEMAIL_META_REF_HTML] .= $document->saveXML($childNode);
+				foreach ($element_ref->childNodes as $childNode) $status[ISEMAIL_META_REF_HTML] .= $document->saveXML($childNode);
 			}
 
 			if ((bool) ($type & ISEMAIL_META_REF_ALT)) {
-				if (!array_key_exists(ISEMAIL_META_REF_ALT, $return)) $return[ISEMAIL_META_REF_ALT] = '';
+				if (!array_key_exists(ISEMAIL_META_REF_ALT, $status)) $status[ISEMAIL_META_REF_ALT] = '';
 
 				// The "correct" HTML in the XML file doesn't do anything useful with current browsers
 				// So we can transform it into useful but less semantic HTML
@@ -184,6 +187,7 @@ if (!defined('ISEMAIL_META_DESC')) {
 		<xsl:text>
 </xsl:text>	<a>
 			<xsl:attribute name="href"><xsl:value-of select="blockquote/@cite" /></xsl:attribute>
+			<xsl:attribute name="target">_blank</xsl:attribute>
 			<xsl:copy-of select="cite" />
 		</a>
 	</xsl:template>
@@ -197,16 +201,16 @@ XSL;
 				$newdoc = new DOMDocument();
 				$newdoc->appendChild($newdoc->importNode($element_ref, true));
 
-				$return[ISEMAIL_META_REF_ALT] .= $xsl->transformToXML($newdoc);
+				$status[ISEMAIL_META_REF_ALT] .= $xsl->transformToXML($newdoc);
 			}
 		}
 	}
 
 	if ((bool) ($type & ISEMAIL_META_VALUE)) {
-		$return[ISEMAIL_META_VALUE] = $value;
+		$status[ISEMAIL_META_VALUE] = $value;
 	}
 
-	return (count($return) === 1) ? array_pop($return) : $return;
+	return (count($status) === 1) ? array_pop($status) : $status;
 }
 
 
@@ -214,7 +218,7 @@ XSL;
  * Return a list of valid values
  */
 /*.array[int]mixed.*/ function is_email_list($type = ISEMAIL_META_VALUE) {
-	$return = array();
+	$status = array();
 
 	// Grab the metadata
 	$document = new DOMDocument();
@@ -236,8 +240,8 @@ XSL;
 		$nodeList	= $XPath->query("/meta/Diagnoses/item/$tag");
 	}
 
-	foreach ($nodeList as $node) $return[] = $node->nodeValue;
+	foreach ($nodeList as $node) $status[] = $node->nodeValue;
 
-	return $return;
+	return $status;
 }
 ?>
